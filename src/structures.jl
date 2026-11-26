@@ -51,7 +51,7 @@ end
 # ==============================================================================
 
 """
-    
+    BMCNodeOpt{B}
 
 Nút trên cây BMC-tree cho bản tối ưu, sử dụng biểu diễn Left-Child Right-Sibling
 (LCRS) để tránh cấp phát `Vector` rỗng cho hàng triệu nút lá trên dữ liệu thưa.
