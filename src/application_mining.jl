@@ -11,7 +11,7 @@ include(joinpath(@__DIR__, "structures.jl"))
 include(joinpath(@__DIR__, "algorithm", "negfin_baseline.jl"))
 
 function parse_args(args::Vector{String})
-    ops = Dict{String, String}()
+    options = Dict{String, String}()
     i = 1
     while i <= length(args)
         key = args[i]
