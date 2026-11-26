@@ -1,16 +1,16 @@
 """
 Entry-point dòng lệnh (CLI) cho thuật toán `negFIN`.
 Ví dụ:
-    julia --project=. src/main.jl --input data/toy/sample.txt --output out.txt --minsup 0.4
-    julia --project=. src/main.jl --input data.txt --output out.txt --minsup 0.05 --algo optimized --stats
+    julia --project=. src/main.jl --input data/toy/paper_example1.txt \\
+        --output out.txt --minsup 0.4 --algo optimized --stats
 """
 
 using Printf: @printf
 
 include("utils.jl")
 include("structures.jl")
-include("negfin_baseline.jl")
-include("negfin_optimized.jl")
+include("algorithm/negfin_baseline.jl")
+include("algorithm/negfin_optimized.jl")
 
 """
     parse_cli_args(args::Vector{String}) -> NamedTuple
@@ -45,16 +45,16 @@ function parse_cli_args(args::Vector{String})
             println(
                 """
                 Cách dùng:
-                  julia --project=. src/main.jl --input <file> --output <file> --minsup <val> [options]
+                  julia --project=. src/main.jl --input <in> --output <out> --minsup <v>
 
                 Tham số bắt buộc:
-                  --input,  -i <path>   Đường dẫn file CSDL giao dịch chuẩn SPMF (.txt)
-                  --output, -o <path>   Đường dẫn file xuất tập phổ biến chuẩn SPMF (.txt)
-                  --minsup, -m <val>    Ngưỡng hỗ trợ tối thiểu (tỷ lệ 0 < val <= 1 hoặc số nguyên)
+                  --input,  -i <path>   File CSDL giao dịch chuẩn SPMF (.txt)
+                  --output, -o <path>   File xuất tập phổ biến chuẩn SPMF (.txt)
+                  --minsup, -m <val>    Ngưỡng hỗ trợ (tỷ lệ 0 < val <= 1 hoặc số nguyên)
 
                 Tùy chọn:
-                  --algo, -a <name>     Phiên bản thuật toán: optimized (mặc định) | baseline
-                  --stats               In thời gian chạy, bộ nhớ cấp phát và số tập phổ biến
+                  --algo, -a <name>     Phiên bản: optimized (mặc định) | baseline
+                  --stats               In thời gian chạy và số tập phổ biến
                   --help, -h            Hiển thị hướng dẫn
                 """,
             )
@@ -66,13 +66,20 @@ function parse_cli_args(args::Vector{String})
     end
 
     if isempty(input_path) || isempty(output_path) || isempty(minsup_str)
-        error("Thiếu tham số bắt buộc (--input, --output, --minsup). Dùng --help để xem hướng dẫn.")
+        error(
+            "Thiếu tham số bắt buộc (--input, --output, --minsup). " *
+            "Dùng --help để xem hướng dẫn.",
+        )
     end
     if !(algo in ("baseline", "optimized"))
         error("Giá trị --algo phải là 'baseline' hoặc 'optimized', nhận được: '$algo'")
     end
 
-    min_sup = occursin('.', minsup_str) ? parse(Float64, minsup_str) : parse(Int, minsup_str)
+    min_sup = if occursin('.', minsup_str)
+        parse(Float64, minsup_str)
+    else
+        parse(Int, minsup_str)
+    end
     return (
         input_path=input_path,
         output_path=output_path,
@@ -103,7 +110,7 @@ function run_cli(args::Vector{String})
 
     if cfg.show_stats
         @printf(
-            "[negFIN | %s] Transactions: %d | MinSup: %s | Itemsets: %d | Runtime: %.4f s\n",
+            "[negFIN | %s] Tx: %d | MinSup: %s | Itemsets: %d | Runtime: %.4f s\n",
             cfg.algo,
             length(transactions),
             string(cfg.min_sup),

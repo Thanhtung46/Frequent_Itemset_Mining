@@ -19,8 +19,8 @@ using Statistics: median
 
 include(joinpath(@__DIR__, "..", "src", "utils.jl"))
 include(joinpath(@__DIR__, "..", "src", "structures.jl"))
-include(joinpath(@__DIR__, "..", "src", "negfin_baseline.jl"))
-include(joinpath(@__DIR__, "..", "src", "negfin_optimized.jl"))
+include(joinpath(@__DIR__, "..", "src", "algorithm", "negfin_baseline.jl"))
+include(joinpath(@__DIR__, "..", "src", "algorithm", "negfin_optimized.jl"))
 
 const ROOT_DIR = normpath(joinpath(@__DIR__, ".."))
 const BENCH_DIR = joinpath(ROOT_DIR, "data", "benchmark")
@@ -138,7 +138,7 @@ end
 """
     measure_median_runtime(fn, db, min_sup; repeats=3) -> Tuple{Float64, Int, Float64}
 
-Đo thời gian chạy trung vị (giây), số lượng itemsets và bộ nhớ cấp phát (MB) sau warm-up JIT.
+Đo thời gian chạy trung vị (giây), số itemsets và bộ nhớ cấp phát (MB) sau warm-up JIT.
 """
 function measure_median_runtime(
     fn::F,
@@ -177,14 +177,27 @@ function measure_peak_rss_mb(input_path::String, min_sup::Float64, algo::String)
     out_tmp = tempname() * "_rss.txt"
     err_buf = IOBuffer()
     try
+        base_args = [
+            julia_bin,
+            "--project=$ROOT_DIR",
+            main_jl,
+            "--input",
+            input_path,
+            "--output",
+            out_tmp,
+            "--minsup",
+            string(min_sup),
+            "--algo",
+            algo,
+        ]
         if Sys.isapple()
-            cmd = `/usr/bin/time -l $julia_bin --project=$ROOT_DIR $main_jl --input $input_path --output $out_tmp --minsup $min_sup --algo $algo`
+            cmd = Cmd(vcat(["/usr/bin/time", "-l"], base_args))
             run(pipeline(cmd; stdout=devnull, stderr=err_buf))
             txt = String(take!(err_buf))
             m = match(r"(\d+)\s+maximum resident set size", txt)
             return m === nothing ? NaN : parse(Float64, m.captures[1]) / 1048576.0
         elseif Sys.islinux()
-            cmd = `/usr/bin/time -v $julia_bin --project=$ROOT_DIR $main_jl --input $input_path --output $out_tmp --minsup $min_sup --algo $algo`
+            cmd = Cmd(vcat(["/usr/bin/time", "-v"], base_args))
             run(pipeline(cmd; stdout=devnull, stderr=err_buf))
             txt = String(take!(err_buf))
             m = match(r"Maximum resident set size \(kbytes\):\s+(\d+)", txt)
@@ -274,7 +287,11 @@ function run_all_experiments()
     # ==========================================================================
     println("\n=== THỰC NGHIỆM 1: CORRECTNESS (5 BENCHMARKS) ===")
     open(joinpath(LOGS_DIR, "exp1_correctness.csv"), "w") do io
-        println(io, "dataset,minsup,n_tx,itemsets_base,itemsets_opt,base_vs_opt_match,spmf_match")
+        println(
+            io,
+            "dataset,minsup,n_tx,itemsets_base,itemsets_opt," *
+            "base_vs_opt_match,spmf_match",
+        )
         for cfg in BENCHMARK_CONFIGS
             db = datasets[cfg.name]
             res_base = negfin_baseline(db, cfg.corr_minsup)
@@ -312,7 +329,8 @@ function run_all_experiments()
     open(joinpath(LOGS_DIR, "exp2_3_runtime_output.csv"), "w") do io
         println(
             io,
-            "dataset,kind,minsup,n_itemsets,time_base_s,time_opt_s,speedup,alloc_base_mb,alloc_opt_mb,time_spmf_s",
+            "dataset,kind,minsup,n_itemsets,time_base_s,time_opt_s," *
+            "speedup,alloc_base_mb,alloc_opt_mb,time_spmf_s",
         )
         for cfg in BENCHMARK_CONFIGS
             db = datasets[cfg.name]
@@ -334,7 +352,7 @@ function run_all_experiments()
 
                 speedup = t_base / max(t_opt, 1e-9)
                 @printf(
-                    "    minsup=%-6.3f | itemsets=%8d | base=%7.4fs | opt=%7.4fs | speedup=%5.2fx\n",
+                    "    ms=%-6.3f | is=%8d | base=%7.4fs | opt=%7.4fs | %5.2fx\n",
                     ms,
                     n_is_o,
                     t_base,
@@ -367,7 +385,8 @@ function run_all_experiments()
     open(joinpath(LOGS_DIR, "exp4_memory.csv"), "w") do io
         println(
             io,
-            "dataset,minsup,alloc_base_mb,alloc_opt_mb,alloc_reduction_pct,peak_rss_base_mb,peak_rss_opt_mb",
+            "dataset,minsup,alloc_base_mb,alloc_opt_mb," *
+            "alloc_reduction_pct,peak_rss_base_mb,peak_rss_opt_mb",
         )
         for cfg in BENCHMARK_CONFIGS
             db = datasets[cfg.name]
@@ -379,7 +398,7 @@ function run_all_experiments()
             rss_opt = measure_peak_rss_mb(fpath, ms, "optimized")
             red_pct = (1.0 - mb_opt / max(mb_base, 1e-9)) * 100.0
             @printf(
-                "  %-12s (minsup=%.3f): Alloc %.2f -> %.2f MB (-%.1f%%) | Peak RSS %.1f -> %.1f MB\n",
+                "  %-11s (ms=%.3f): Alloc %.2f->%.2f MB (-%.1f%%) | RSS %.1f->%.1f MB\n",
                 cfg.name,
                 ms,
                 mb_base,
@@ -412,14 +431,20 @@ function run_all_experiments()
     ]
     fractions = [0.10, 0.25, 0.50, 0.75, 1.00]
     open(joinpath(LOGS_DIR, "exp5_scalability.csv"), "w") do io
-        println(io, "dataset,minsup,fraction,n_tx,n_itemsets,time_base_s,time_opt_s,alloc_opt_mb")
+        println(
+            io,
+            "dataset,minsup,fraction,n_tx,n_itemsets," *
+            "time_base_s,time_opt_s,alloc_opt_mb",
+        )
         for (dname, ms) in scalability_targets
             full_db = datasets[dname]
             n_total = length(full_db)
             for frac in fractions
                 n_sub = max(1, round(Int, n_total * frac))
                 sub_db = full_db[1:n_sub]
-                t_base, _, _ = measure_median_runtime(negfin_baseline, sub_db, ms; repeats=3)
+                t_base, _, _ = measure_median_runtime(
+                    negfin_baseline, sub_db, ms; repeats=3
+                )
                 t_opt, n_is, mb_opt = measure_median_runtime(
                     negfin_optimized, sub_db, ms; repeats=3
                 )
@@ -459,7 +484,8 @@ function run_all_experiments()
     open(joinpath(LOGS_DIR, "exp6_tx_length.csv"), "w") do io
         println(
             io,
-            "avg_len,n_tx,n_items,minsup,nf,bmc_nodes,n_itemsets,time_base_s,time_opt_s,alloc_base_mb,alloc_opt_mb",
+            "avg_len,n_tx,n_items,minsup,nf,bmc_nodes,n_itemsets," *
+            "time_base_s,time_opt_s,alloc_base_mb,alloc_opt_mb",
         )
         for (i, alen) in enumerate(avg_lengths)
             syn_db = generate_synthetic_txlen_db(n_tx_syn, n_items_syn, alen, 42 + i)
@@ -471,7 +497,7 @@ function run_all_experiments()
                 negfin_optimized, syn_db, ms_syn; repeats=3
             )
             @printf(
-                "  avg_len=%2d | nf=%2d | bmc_nodes=%6d | itemsets=%6d | base=%7.4fs | opt=%7.4fs\n",
+                "  len=%2d | nf=%2d | nodes=%6d | is=%6d | base=%7.4fs | opt=%7.4fs\n",
                 alen,
                 n_f,
                 bmc_nodes,

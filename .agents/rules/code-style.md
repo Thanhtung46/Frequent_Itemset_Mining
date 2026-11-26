@@ -19,7 +19,7 @@ File rule này quy định phong cách viết mã, tiêu chuẩn hiệu năng Ju
   - Hàm kiểm tra điều kiện (predicate) bắt đầu bằng `is_` hoặc `has_` (ví dụ: `is_bit_set`, `has_children`).
 - **Tổ chức file & module:**
   - Khai báo `using` / `import` ở đầu file; ưu tiên import tường minh (`using Test: @test, @testset`).
-  - Tách biệt rõ: cấu trúc dữ liệu (`src/structures.jl`), bản cơ bản (`src/negfin_baseline.jl`), bản tối ưu (`src/negfin_optimized.jl`), I/O & tiện ích (`src/utils.jl`), CLI (`src/main.jl`).
+  - Tách biệt rõ: thuật toán chính (`src/algorithm/negfin_baseline.jl`, `src/algorithm/negfin_optimized.jl`), cấu trúc dữ liệu (`src/structures.jl`), I/O & tiện ích (`src/utils.jl`), CLI (`src/main.jl`).
   - Không viết Julia theo tư duy OOP của Java/Python (tránh nhét method vào trong struct hoặc tạo class wrapper rườm rà).
 
 ---

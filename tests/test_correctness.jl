@@ -209,10 +209,8 @@ end
             end
             try
                 p_err = IOBuffer()
-                proc = run(
-                    pipeline(`$bin -jar $jar_path test_check`; stdout=devnull, stderr=p_err);
-                    wait=false,
-                )
+                cmd = `$bin -jar $jar_path test_check`
+                proc = run(pipeline(cmd; stdout=devnull, stderr=p_err); wait=false)
                 wait(proc)
                 msg = String(take!(p_err))
                 if !occursin("UnsupportedClassVersionError", msg) &&
@@ -229,8 +227,9 @@ end
     java_bin = isfile(spmf_jar) ? _find_java_for_spmf(spmf_jar) : nothing
     if isfile(spmf_jar) && java_bin !== nothing
         @testset "8. Cross-Check 100% with SPMF (spmf.jar) on 5 Datasets" begin
+            ex1_path = joinpath(@__DIR__, "..", "data", "toy", "paper_example1.txt")
             spmf_cases = [
-                ("Paper Example 1", read_spmf_database(joinpath(@__DIR__, "..", "data", "toy", "paper_example1.txt")), 0.4),
+                ("Paper Example 1", read_spmf_database(ex1_path), 0.4),
                 ("Identical-Promo (8 items)", [collect(1:8) for _ in 1:6], 0.5),
                 ("Non-Contiguous IDs", [
                     [1001, 7, 9999, 42],
@@ -255,17 +254,17 @@ end
                         end
                     end
                     pct_str = string(round(min_sup * 100; digits=4), "%")
-                    run(
-                        pipeline(
-                            `$java_bin -jar $spmf_jar run negFIN $in_tmp $out_spmf $pct_str`;
-                            stdout=devnull,
-                            stderr=devnull,
-                        ),
-                    )
+                    spmf_cmd = Cmd([
+                        java_bin, "-jar", spmf_jar, "run", "negFIN",
+                        in_tmp, out_spmf, pct_str,
+                    ])
+                    run(pipeline(spmf_cmd; stdout=devnull, stderr=devnull))
                     spmf_dict = read_spmf_results(out_spmf)
-                    ok_base, msg_base = compare_results(negfin_baseline(db, min_sup), spmf_dict)
-                    ok_opt, msg_opt = compare_results(negfin_optimized(db, min_sup), spmf_dict)
-                    println("  [SPMF] $label (minsup=$pct_str): Base=$msg_base | Opt=$msg_opt")
+                    res_b = negfin_baseline(db, min_sup)
+                    res_o = negfin_optimized(db, min_sup)
+                    ok_base, msg_base = compare_results(res_b, spmf_dict)
+                    ok_opt, msg_opt = compare_results(res_o, spmf_dict)
+                    println("  [SPMF] $label ($pct_str): Base=$msg_base | Opt=$msg_opt")
                     @test ok_base
                     @test ok_opt
                 finally

@@ -7,7 +7,8 @@ tận dụng các đặc trưng hiệu năng của Julia:
 2. Cây BMC-tree biểu diễn LCRS (`BMCNodeOpt{B}`) giảm cấp phát nút lá.
 3. Cấu trúc `NodeSetOpt{B}` dạng SoA (Structure-of-Arrays) + `@inbounds`.
 4. Cắt sớm (Early-Abort) ngay khi `neg_support` vượt quá `parent_support - min_sup_count`.
-5. Xuất tập phổ biến không cấp phát `FIS_parent` bằng hai stack phẳng `prefix` và `equiv_stack`.
+5. Xuất tập phổ biến không cấp phát `FIS_parent` bằng hai stack phẳng `prefix`
+   và `equiv_stack`.
 """
 
 """
@@ -70,7 +71,9 @@ function _build_bmc_tree_opt(
             if found === nothing
                 # Property 4: N.bitmap_code = father.bitmap_code | 2^index(i)
                 new_bitmap = set_bit(current.bitmap, Int(pos))
-                new_node = BMCNodeOpt{B}(pos, Int32(1), new_bitmap, nothing, current.first_child)
+                new_node = BMCNodeOpt{B}(
+                    pos, Int32(1), new_bitmap, nothing, current.first_child
+                )
                 current.first_child = new_node
                 current = new_node
             else
@@ -244,7 +247,8 @@ function _mine_level_k_opt!(
 end
 
 """
-    _run_negfin_typed!(emit_fn, ::Type{B}, transactions, l1_items, l1_supports, item_to_pos, min_sup_count)
+    _run_negfin_typed!(emit_fn, ::Type{B}, transactions, l1_items, l1_supports,
+                       item_to_pos, min_sup_count)
 
 Hàm lõi chuyên biệt hóa theo kiểu bitmap `B` (function barrier giúp Julia biên dịch
 mã máy tối ưu không có dynamic dispatch).
@@ -364,8 +368,9 @@ end
 """
     negfin_optimized(emit_fn::Function, transactions::Vector{Vector{Int}}, min_sup::Real)
 
-Chạy thuật toán `negFIN` bản tối ưu ở chế độ streaming: gọi `emit_fn(itemset::Vector{Int}, sup::Int)`
-cho mỗi tập phổ biến tìm được (lưu ý: `itemset` là buffer tái sử dụng, cần `copy(itemset)` nếu lưu lại).
+Chạy thuật toán `negFIN` bản tối ưu ở chế độ streaming: gọi `emit_fn(itemset, sup)`
+cho mỗi tập phổ biến tìm được (lưu ý: `itemset` là buffer tái sử dụng, cần `copy(itemset)`
+nếu lưu lại).
 """
 function negfin_optimized(
     emit_fn::F,
@@ -416,7 +421,13 @@ function negfin_optimized(
         )
     elseif n_f <= 128
         _run_negfin_typed!(
-            emit_fn, UInt128, transactions, l1_items, l1_supports, item_to_pos, min_sup_count
+            emit_fn,
+            UInt128,
+            transactions,
+            l1_items,
+            l1_supports,
+            item_to_pos,
+            min_sup_count,
         )
     elseif n_f <= 192
         _run_negfin_typed!(
@@ -454,7 +465,7 @@ function negfin_optimized(
 end
 
 """
-    negfin_optimized(transactions::Vector{Vector{Int}}, min_sup::Real) -> Vector{Tuple{Vector{Int}, Int}}
+    negfin_optimized(transactions::Vector{Vector{Int}}, min_sup::Real)
 
 Khai thác toàn bộ tập phổ biến bằng thuật toán `negFIN` bản tối ưu và trả về danh sách
 các cặp `(itemset, support_count)`.

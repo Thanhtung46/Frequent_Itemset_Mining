@@ -7,8 +7,8 @@ using Test: @testset
 
 include("../src/utils.jl")
 include("../src/structures.jl")
-include("../src/negfin_baseline.jl")
-include("../src/negfin_optimized.jl")
+include("../src/algorithm/negfin_baseline.jl")
+include("../src/algorithm/negfin_optimized.jl")
 
 @testset "NegFIN Test Suite" begin
     include("test_correctness.jl")

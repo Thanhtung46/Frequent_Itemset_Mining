@@ -12,7 +12,7 @@ Cài đặt Algorithm 1 (`constructing_BMC_tree`) trong bài báo gốc:
 3. Chèn từng giao dịch (đã lọc infrequent items và sắp theo thứ tự ngược `L1`) vào BMC-tree.
 
 # Returns
-- `(root, l1_items, l1_supports)`: Nút gốc BMC-tree, vector mã item `L1` và support tương ứng.
+- `(root, l1_items, l1_supports)`: Nút gốc BMC-tree, vector mã item `L1` và support.
 """
 function _build_bmc_tree_baseline(
     transactions::Vector{Vector{Int}},
@@ -223,7 +223,7 @@ function _construct_frequent_itemset_tree_baseline!(
 end
 
 """
-    negfin_baseline(transactions::Vector{Vector{Int}}, min_sup::Real) -> Vector{Tuple{Vector{Int}, Int}}
+    negfin_baseline(transactions::Vector{Vector{Int}}, min_sup::Real)
 
 Khai thác toàn bộ tập phổ biến (frequent itemsets) bằng thuật toán `negFIN` phiên bản cơ bản
 (bám sát Algorithm 1–4 của Aryabarzan et al., 2018).
