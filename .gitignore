@@ -4,3 +4,5 @@ __pycache__/
 *.pyc
 *.log
 Project.toml
+data/benchmark/*.txt
+spmf/*.jar

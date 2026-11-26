@@ -1,0 +1,6 @@
+dataset,minsup,alloc_base_mb,alloc_opt_mb,alloc_reduction_pct,peak_rss_base_mb,peak_rss_opt_mb
+chess,0.7500,11.747,7.416,36.87,309.45,308.23
+mushroom,0.2500,4.700,1.880,60.00,309.45,309.06
+accidents,0.6000,25.612,7.799,69.55,451.05,444.02
+retail,0.0100,45.904,22.945,50.01,347.27,337.08
+T10I4D100K,0.0150,1719.263,1246.121,27.52,449.08,372.50
