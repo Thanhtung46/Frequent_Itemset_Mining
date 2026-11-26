@@ -172,6 +172,9 @@ end
 hoặc `/usr/bin/time -v` (Linux).
 """
 function measure_peak_rss_mb(input_path::String, min_sup::Float64, algo::String)::Float64
+    if !isfile("/usr/bin/time")
+        return NaN
+    end
     julia_bin = Base.julia_cmd().exec[1]
     main_jl = joinpath(ROOT_DIR, "src", "main.jl")
     out_tmp = tempname() * "_rss.txt"

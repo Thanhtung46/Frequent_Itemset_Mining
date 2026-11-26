@@ -1,8 +1,6 @@
 summary.md
 .DS_Store
-__pycache__/
 *.pyc
 *.log
-Project.toml
 data/benchmark/*.txt
 spmf/*.jar
