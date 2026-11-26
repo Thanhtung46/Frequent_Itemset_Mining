@@ -4,3 +4,7 @@ summary.md
 *.log
 data/benchmark/*.txt
 spmf/*.jar
+
+# Derived Chapter 3 outputs
+results/chapter3/
+data/application/*.csv

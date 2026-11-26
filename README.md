@@ -122,3 +122,28 @@ Sparse-400 (Vector{UInt64})  |      3.70 |      2.32 |   1.59x |      13.33 |   
 Test Summary:     | Pass  Total  Time
 NegFIN Test Suite |   29     29  3.8s
 ```
+
+
+---
+
+## 6. Ứng dụng Chương 3 (Market Basket Analysis & Bag of Visual Words)
+
+Chương 3 bổ sung hai ứng dụng Python để xử lý dữ liệu, dựng đồ thị và báo cáo. **Tất cả frequent itemsets đều được khai thác bằng mã Julia negFIN của nhóm tại `src/algorithm/negfin_baseline.jl`**, thông qua `src/application_mining.jl`. Không cài thuật toán FIM từ thư viện ngoài.
+
+Cài đặt Python **3.10+** và Julia **1.9+** trước khi chạy:
+
+```powershell
+python -m pip install -r requirements-ch3.txt
+python -m pytest -q tests/test_ch3.py
+julia --project=. tests/test_ch3_julia.jl
+python -m applications.run_market
+python -m applications.run_visual
+```
+
+Đầu ra hai ứng dụng: `results/chapter3/market_basket/` và `results/chapter3/visual_words/` (tự tạo lúc chạy). Notebook Colab Python:
+
+- [Demo tổng hợp Chương 3](notebooks/demo.ipynb)
+- [Market Basket Analysis](notebooks/ch3_market_basket.ipynb)
+- [Bag of Visual Words](notebooks/ch3_visual_words.ipynb)
+
+Hướng dẫn ghép mã nguồn, dữ liệu, kiểm thử và giới hạn hiện tại: [CH3_INTEGRATION.md](CH3_INTEGRATION.md). **Cần commit/push source và chạy Julia thật trước khi chốt kết quả Chương 3, đồng thời điền link Colab công khai vào README.**
