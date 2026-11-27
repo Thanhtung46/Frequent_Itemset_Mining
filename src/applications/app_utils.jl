@@ -132,48 +132,49 @@ function save_horizontal_bars_svg(
 )
     length(labels) == length(vals) || error("Labels and values mismatch")
     n = length(vals)
-    width, left, barwidth, rowheight = 1140, 490, 530, 38
-    height = max(220, 120 + n * rowheight)
+    width, left, barwidth, rowheight = 760, 340, 340, 30
+    height = max(180, 92 + n * rowheight)
     maximum_val = isempty(vals) ? 1.0 : max(maximum(vals), eps())
     mkpath(dirname(path))
 
     open(path, "w") do io
         println(
             io,
-            "<svg xmlns=\"http://www.w3.org/2000/svg\" " *
-            "width=\"$width\" height=\"$height\" viewBox=\"0 0 $width $height\">",
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" " *
+            "height=\"$height\" viewBox=\"0 0 $width $height\" " *
+            "style=\"max-width:100%;height:auto;\">",
         )
         println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
         println(
             io,
-            "<text x=\"25\" y=\"36\" font-family=\"Arial\" font-size=\"22\" " *
+            "<text x=\"18\" y=\"28\" font-family=\"Arial\" font-size=\"17\" " *
             "font-weight=\"bold\">$(svg_escape(title))</text>",
         )
         for i in 1:n
-            y = 70 + (i - 1) * rowheight
+            y = 50 + (i - 1) * rowheight
             bar_w = round(Int, vals[i] / maximum_val * barwidth)
             lbl = svg_escape(labels[i])
             val_str = @sprintf("%.3f", vals[i])
             println(
                 io,
-                "<text x=\"$(left - 10)\" y=\"$(y + 21)\" text-anchor=\"end\" " *
-                "font-family=\"Arial\" font-size=\"13\">$lbl</text>",
+                "<text x=\"$(left - 8)\" y=\"$(y + 15)\" text-anchor=\"end\" " *
+                "font-family=\"Arial\" font-size=\"11.5\">$lbl</text>",
             )
             println(
                 io,
-                "<rect x=\"$left\" y=\"$y\" height=\"25\" width=\"$bar_w\" " *
+                "<rect x=\"$left\" y=\"$y\" height=\"20\" width=\"$bar_w\" " *
                 "rx=\"3\" fill=\"#3366a6\"/>",
             )
             println(
                 io,
-                "<text x=\"$(left + bar_w + 8)\" y=\"$(y + 19)\" " *
-                "font-family=\"Arial\" font-size=\"13\">$val_str</text>",
+                "<text x=\"$(left + bar_w + 6)\" y=\"$(y + 15)\" " *
+                "font-family=\"Arial\" font-size=\"11.5\">$val_str</text>",
             )
         end
         println(
             io,
-            "<text x=\"$left\" y=\"$(height - 16)\" font-family=\"Arial\" " *
-            "font-size=\"14\">$(svg_escape(xlabel))</text>",
+            "<text x=\"$left\" y=\"$(height - 12)\" font-family=\"Arial\" " *
+            "font-size=\"12\">$(svg_escape(xlabel))</text>",
         )
         println(io, "</svg>")
     end
@@ -194,4 +195,131 @@ function parse_kv_args(args::Vector{String}, defaults::Dict{String, String})
         i += 2
     end
     return options
+end
+
+"""
+    print_top_rules_table(csv_path::AbstractString; limit::Int=10)
+
+In bảng Top-`limit` luật kết hợp từ file CSV theo định dạng căn cột dễ đọc.
+"""
+function print_top_rules_table(csv_path::AbstractString; limit::Int=10)
+    lines = readlines(csv_path)
+    length(lines) <= 1 && (println("(Không có luật nào)"); return nothing)
+    rows = [split(line, ",") for line in lines[2:min(end, limit + 1)]]
+    rule_strs = ["$(r[1]) => $(r[2])" for r in rows]
+    w = max(24, maximum(length, rule_strs))
+    sep = "-"^(w + 43)
+    println(sep)
+    println(
+        rpad("#", 3),
+        " | ",
+        rpad("Luật kết hợp (A => B)", w),
+        " | ",
+        lpad("Count", 5),
+        " | ",
+        lpad("Supp", 6),
+        " | ",
+        lpad("Conf", 6),
+        " | ",
+        lpad("Lift", 4),
+        " | ",
+        lpad("Lev", 6),
+    )
+    println(sep)
+    for (i, r) in enumerate(rows)
+        cnt = parse(Int, r[3])
+        sup = 100.0 * parse(Float64, r[4])
+        conf = 100.0 * parse(Float64, r[5])
+        lift = parse(Float64, r[6])
+        lev = parse(Float64, r[7])
+        @printf(
+            "%2d  | %s | %5d | %5.2f%% | %5.2f%% | %4.2f | %6.4f\n",
+            i,
+            rpad(rule_strs[i], w),
+            cnt,
+            sup,
+            conf,
+            lift,
+            lev,
+        )
+    end
+    println(sep)
+    return nothing
+end
+
+"""
+    print_accuracy_table(csv_path::AbstractString)
+
+In bảng so sánh độ chính xác phân loại Nearest-Centroid theo định dạng căn cột.
+"""
+function print_accuracy_table(csv_path::AbstractString)
+    lines = readlines(csv_path)
+    length(lines) <= 1 && return nothing
+    sep = "-"^56
+    println(sep)
+    println(
+        rpad("Representation", 28),
+        " | ",
+        lpad("Features", 8),
+        " | ",
+        lpad("Test Accuracy", 13),
+    )
+    println(sep)
+    for line in lines[2:end]
+        r = split(line, ",")
+        n_feat = parse(Int, r[2])
+        acc = 100.0 * parse(Float64, r[3])
+        @printf("%-28s | %8d | %12.2f%%\n", r[1], n_feat, acc)
+    end
+    println(sep)
+    return nothing
+end
+
+"""
+    print_enrichment_table(csv_path::AbstractString; limit::Int=10)
+
+In bảng Top-`limit` pattern ảnh đặc trưng theo chỉ số `Enrichment` căn cột dễ đọc.
+"""
+function print_enrichment_table(csv_path::AbstractString; limit::Int=10)
+    lines = readlines(csv_path)
+    length(lines) <= 1 && return nothing
+    rows = [split(line, ",") for line in lines[2:min(end, limit + 1)]]
+    w = max(14, maximum(r -> length(r[1]), rows))
+    sep = "-"^(w + 54)
+    println(sep)
+    println(
+        rpad("#", 3),
+        " | ",
+        lpad("Digit", 5),
+        " | ",
+        rpad("Visual Pattern", w),
+        " | ",
+        lpad("Count", 5),
+        " | ",
+        lpad("Global", 6),
+        " | ",
+        lpad("Class", 6),
+        " | ",
+        lpad("Enrich", 6),
+    )
+    println(sep)
+    for (i, r) in enumerate(rows)
+        digit = parse(Int, r[2])
+        cnt = parse(Int, r[3])
+        gsup = 100.0 * parse(Float64, r[4])
+        csup = 100.0 * parse(Float64, r[5])
+        enr = parse(Float64, r[6])
+        @printf(
+            "%2d  | %5d | %s | %5d | %5.1f%% | %5.1f%% | %5.2fx\n",
+            i,
+            digit,
+            rpad(r[1], w),
+            cnt,
+            gsup,
+            csup,
+            enr,
+        )
+    end
+    println(sep)
+    return nothing
 end

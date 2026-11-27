@@ -4,6 +4,8 @@
 codebook K-means thuần Julia -> giao dịch visual words -> khai thác bằng `negFIN`.
 """
 
+const DIGITS_URL = "$HF_DATASET_BASE/digits8x8.csv"
+
 """
     read_digits(path::AbstractString; classes=[0, 1, 3, 8])
 
@@ -303,8 +305,9 @@ function digits_svg(
     open(path, "w") do io
         println(
             io,
-            "<svg xmlns=\"http://www.w3.org/2000/svg\" " *
-            "width=\"$width\" height=\"$height\">",
+            "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"$width\" " *
+            "height=\"$height\" viewBox=\"0 0 $width $height\" " *
+            "style=\"max-width:100%;height:auto;\">",
         )
         println(io, "<rect width=\"100%\" height=\"100%\" fill=\"white\"/>")
         println(
@@ -351,6 +354,15 @@ function run_visual_words(;
     algo::Symbol=:baseline,
     output_dir::String=joinpath(ROOT, "results", "chapter3", "visual_words"),
 )
+    if !isfile(data_path)
+        mkpath(dirname(data_path))
+        println("Downloading Digits CSV from Hugging Face: $DIGITS_URL")
+        try
+            download(DIGITS_URL, data_path)
+        catch err
+            error("Digits download failed ($DIGITS_URL -> $data_path): $err")
+        end
+    end
     imgs, labels = read_digits(data_path)
     train_imgs, test_imgs, train_y, test_y = split_digits(
         imgs, labels; seed=seed, max_per_class=max_per_class
@@ -445,6 +457,20 @@ function run_visual_words(;
         xlabel="P(pattern | class) / P(pattern)",
     )
     digits_svg(joinpath(output_dir, "digits_samples.svg"), test_imgs, test_y)
+    if startswith(abspath(output_dir), abspath(joinpath(ROOT, "results", "chapter3")))
+        fig_dir = joinpath(ROOT, "results", "figures")
+        mkpath(fig_dir)
+        cp(
+            joinpath(output_dir, "enriched_patterns.svg"),
+            joinpath(fig_dir, "ch3_enriched_patterns.svg");
+            force=true,
+        )
+        cp(
+            joinpath(output_dir, "digits_samples.svg"),
+            joinpath(fig_dir, "ch3_digits_samples.svg");
+            force=true,
+        )
+    end
 
     open(joinpath(output_dir, "summary.txt"), "w") do io
         println(io, "Dataset: UCI optical recognition digits (8x8 grayscale)")

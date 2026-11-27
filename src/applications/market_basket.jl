@@ -4,9 +4,12 @@
 kết hợp (`support`, `confidence`, `lift`, `leverage`) -> xuất Top-10 theo `Lift`.
 """
 
-const GROCERIES_BASE =
+const HF_DATASET_BASE =
+    "https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining/resolve/main"
+const GROCERIES_URL = "$HF_DATASET_BASE/groceries.csv"
+const GROCERIES_FALLBACK_BASE =
     "https://raw.githubusercontent.com/Elthiero/association-rule-learning-groceries"
-const GROCERIES_URL = "$GROCERIES_BASE/main/data/groceries.csv"
+const GROCERIES_FALLBACK_URL = "$GROCERIES_FALLBACK_BASE/main/data/groceries.csv"
 
 """
     load_baskets(path::AbstractString) -> Vector{Vector{String}}
@@ -132,11 +135,16 @@ function run_market_basket(;
     if !isfile(csv_path)
         download_if_missing || error("Missing $csv_path. Download Groceries CSV first.")
         mkpath(dirname(csv_path))
-        println("Downloading real Groceries CSV from: $GROCERIES_URL")
+        println("Downloading Groceries CSV from Hugging Face: $GROCERIES_URL")
         try
             download(GROCERIES_URL, csv_path)
-        catch err
-            error("Groceries download failed ($GROCERIES_URL -> $csv_path): $err")
+        catch
+            println("Fallback download from: $GROCERIES_FALLBACK_URL")
+            try
+                download(GROCERIES_FALLBACK_URL, csv_path)
+            catch err
+                error("Groceries download failed ($GROCERIES_URL -> $csv_path): $err")
+            end
         end
     end
 
@@ -185,6 +193,15 @@ function run_market_basket(;
         "Groceries: Top 10 association rules by Lift";
         xlabel="Lift",
     )
+    if startswith(abspath(output_dir), abspath(joinpath(ROOT, "results", "chapter3")))
+        fig_dir = joinpath(ROOT, "results", "figures")
+        mkpath(fig_dir)
+        cp(
+            joinpath(output_dir, "top10_lift.svg"),
+            joinpath(fig_dir, "ch3_top10_lift.svg");
+            force=true,
+        )
+    end
 
     open(joinpath(output_dir, "summary.txt"), "w") do io
         println(io, "Source: $csv_path")

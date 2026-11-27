@@ -7,7 +7,7 @@ cho hai ứng dụng thực tế thuần Julia:
 module Applications
 
 using Downloads: download
-using Printf: @sprintf
+using Printf: @printf, @sprintf
 using Random: MersenneTwister, randperm, shuffle!
 using Statistics: mean, std
 
@@ -32,6 +32,9 @@ export mine_itemsets,
     dense_descriptors,
     learn_codebook,
     visual_transactions,
-    run_visual_words
+    run_visual_words,
+    print_top_rules_table,
+    print_accuracy_table,
+    print_enrichment_table
 
 end
