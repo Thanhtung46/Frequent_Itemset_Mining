@@ -1,7 +1,5 @@
-"""
-Cấu trúc dữ liệu cốt lõi cho thuật toán `negFIN` (Aryabarzan et al., 2018):
-BMC-tree (BitMap Coding tree), N-info, Nodeset và NegNodeset định kiểu cụ thể.
-"""
+# Cấu trúc dữ liệu cốt lõi cho thuật toán `negFIN` (Aryabarzan et al., 2018):
+# BMC-tree (BitMap Coding tree), N-info, Nodeset và NegNodeset định kiểu cụ thể.
 
 # ==============================================================================
 # 1. CẤU TRÚC CHO PHIÊN BẢN CƠ BẢN (BASELINE) — SỬ DỤNG BitVector

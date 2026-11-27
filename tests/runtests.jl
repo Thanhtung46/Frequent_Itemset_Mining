@@ -1,7 +1,5 @@
-"""
-File chạy chính cho toàn bộ bộ kiểm thử tự động:
-`julia --project=. tests/runtests.jl`
-"""
+# File chạy chính cho toàn bộ bộ kiểm thử tự động:
+# `julia --project=. tests/runtests.jl`
 
 using Test: @testset
 

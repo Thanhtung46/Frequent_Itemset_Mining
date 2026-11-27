@@ -1,15 +1,13 @@
-"""
-Phiên bản tối ưu hóa (Optimized) của thuật toán `negFIN` (Aryabarzan et al., 2018),
-tận dụng các đặc trưng hiệu năng của Julia:
-1. Multiple Dispatch theo số lượng frequent 1-itemsets `nf`:
-   `UInt64` (<=64), `UInt128` (<=128), `NTuple{3,UInt64}` (<=192),
-   `NTuple{4,UInt64}` (<=256), `Vector{UInt64}` (>256).
-2. Cây BMC-tree biểu diễn LCRS (`BMCNodeOpt{B}`) giảm cấp phát nút lá.
-3. Cấu trúc `NodeSetOpt{B}` dạng SoA (Structure-of-Arrays) + `@inbounds`.
-4. Cắt sớm (Early-Abort) ngay khi `neg_support` vượt quá `parent_support - min_sup_count`.
-5. Xuất tập phổ biến không cấp phát `FIS_parent` bằng hai stack phẳng `prefix`
-   và `equiv_stack`.
-"""
+# Phiên bản tối ưu hóa (Optimized) của thuật toán `negFIN` (Aryabarzan et al., 2018),
+# tận dụng các đặc trưng hiệu năng của Julia:
+# 1. Multiple Dispatch theo số lượng frequent 1-itemsets `nf`:
+#    `UInt64` (<=64), `UInt128` (<=128), `NTuple{3,UInt64}` (<=192),
+#    `NTuple{4,UInt64}` (<=256), `Vector{UInt64}` (>256).
+# 2. Cây BMC-tree biểu diễn LCRS (`BMCNodeOpt{B}`) giảm cấp phát nút lá.
+# 3. Cấu trúc `NodeSetOpt{B}` dạng SoA (Structure-of-Arrays) + `@inbounds`.
+# 4. Cắt sớm (Early-Abort) ngay khi `neg_support` vượt quá `parent_support - min_sup_count`.
+# 5. Xuất tập phổ biến không cấp phát `FIS_parent` bằng hai stack phẳng `prefix`
+#    và `equiv_stack`.
 
 """
     _build_bmc_tree_opt(::Type{B}, transactions, l1_items, item_to_pos, n_words)

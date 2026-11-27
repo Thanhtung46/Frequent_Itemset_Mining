@@ -2,9 +2,8 @@ summary.md
 .DS_Store
 *.pyc
 *.log
-data/benchmark/*.txt
 spmf/*.jar
-
-# Derived Chapter 3 outputs
+data/benchmark/*.txt
+# Generated outputs and downloaded Ch3 Groceries dataset
 results/chapter3/
-data/application/*.csv
+data/chapter3/groceries.csv

@@ -126,24 +126,28 @@ NegFIN Test Suite |   29     29  3.8s
 
 ---
 
-## 6. Ứng dụng Chương 3 (Market Basket Analysis & Bag of Visual Words)
+## 6. Chương 3 – Hai ứng dụng thuần Julia
 
-Chương 3 bổ sung hai ứng dụng Python để xử lý dữ liệu, dựng đồ thị và báo cáo. **Tất cả frequent itemsets đều được khai thác bằng mã Julia negFIN của nhóm tại `src/algorithm/negfin_baseline.jl`**, thông qua `src/application_mining.jl`. Không cài thuật toán FIM từ thư viện ngoài.
+**Không cần cài Python / pandas / scikit-learn / OpenCV để chạy Chương 3.** Hai ứng dụng gọi trực tiếp thuật toán negFIN trong `src/algorithm/` (code nhóm giữ nguyên). Dữ liệu ảnh Digits CSV nằm sẵn trong repo; dữ liệu Groceries tự tải khi chạy lần đầu.
 
-Cài đặt Python **3.10+** và Julia **1.9+** trước khi chạy:
+### Chạy trên Windows PowerShell hoặc terminal của VS Code (tại repo root)
 
 ```powershell
-python -m pip install -r requirements-ch3.txt
-python -m pytest -q tests/test_ch3.py
+julia --version
 julia --project=. tests/test_ch3_julia.jl
-python -m applications.run_market
-python -m applications.run_visual
+julia --project=. applications/run_market.jl
+julia --project=. applications/run_visual.jl
 ```
 
-Đầu ra hai ứng dụng: `results/chapter3/market_basket/` và `results/chapter3/visual_words/` (tự tạo lúc chạy). Notebook Colab Python:
+- Đổi ngưỡng / cách chạy: `julia --project=. applications/run_market.jl --minsup 0.01 --minconf 0.15 --algo baseline`
+- Đổi số visual words: `julia --project=. applications/run_visual.jl --minsup 0.12 --words 16 --seed 42`
+- Đối chứng bản tối ưu: thêm `--algo optimized` cho từng ứng dụng.
+- Kết quả thực nghiệm tạo tại `results/chapter3/` dưới dạng CSV, SPMF, SVG và summary. Mở SVG bằng trình duyệt để xem biểu đồ.
 
-- [Demo tổng hợp Chương 3](notebooks/demo.ipynb)
-- [Market Basket Analysis](notebooks/ch3_market_basket.ipynb)
-- [Bag of Visual Words](notebooks/ch3_visual_words.ipynb)
+### Demo trên Google Colab
 
-Hướng dẫn ghép mã nguồn, dữ liệu, kiểm thử và giới hạn hiện tại: [CH3_INTEGRATION.md](CH3_INTEGRATION.md). **Cần commit/push source và chạy Julia thật trước khi chốt kết quả Chương 3, đồng thời điền link Colab công khai vào README.**
+[**Mở demo Chương 3 trên Colab**](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/demo.ipynb) — **chỉ hoạt động sau khi nhóm push các file mới lên GitHub** và đặt quyền truy cập công khai. Notebook dùng kernel Python của Colab nhưng chỉ chạy các lệnh shell để cài và gọi Julia, không có thuật toán Python.
+
+### Nội dung để báo cáo / vấn đáp
+
+Xem [docs/Chapter3_notes.md](docs/Chapter3_notes.md) để giải thích dữ liệu, quy trình, lý do chọn thuật toán và giới hạn. Ứng dụng thị giác dùng local **dense gradient descriptors** + Julia K-means tự cài, **không phải SIFT**. Kết quả phải được kiểm chứng khi chạy thực tế; nhóm cần tự ghi output kiểm thử và hai ứng dụng vào README trước khi nộp.

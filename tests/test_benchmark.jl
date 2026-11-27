@@ -1,6 +1,4 @@
-"""
-Kiểm thử hiệu năng và bộ nhớ (Baseline vs. Optimized) sau bước warm-up JIT.
-"""
+# Kiểm thử hiệu năng và bộ nhớ (Baseline vs. Optimized) sau bước warm-up JIT.
 
 using Printf: @printf
 using Random: MersenneTwister

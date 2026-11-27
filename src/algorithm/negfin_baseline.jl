@@ -1,7 +1,5 @@
-"""
-Phiên bản cài đặt cơ bản (Baseline) của thuật toán `negFIN` (Aryabarzan et al., 2018),
-bám sát giả mã Algorithm 1–4 trong bài báo gốc bằng `BitVector`.
-"""
+# Phiên bản cài đặt cơ bản (Baseline) của thuật toán `negFIN` (Aryabarzan et al., 2018),
+# bám sát giả mã Algorithm 1–4 trong bài báo gốc bằng `BitVector`.
 
 """
     _build_bmc_tree_baseline(transactions, min_sup_count)

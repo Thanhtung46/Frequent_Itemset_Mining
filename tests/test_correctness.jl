@@ -1,7 +1,5 @@
-"""
-Kiểm thử tính đúng đắn (Correctness) trên >= 7 CSDL khác nhau (bao gồm các trường hợp biên,
-kiểm thử đa nhánh Multiple Dispatch và đối chiếu 100% với Ground Truth / `spmf.jar`).
-"""
+# Kiểm thử tính đúng đắn (Correctness) trên >= 7 CSDL khác nhau (bao gồm các trường hợp biên,
+# kiểm thử đa nhánh Multiple Dispatch và đối chiếu 100% với Ground Truth / `spmf.jar`).
 
 using Random: MersenneTwister
 using Test: @test, @testset

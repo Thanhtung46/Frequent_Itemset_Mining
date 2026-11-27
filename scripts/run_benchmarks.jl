@@ -1,17 +1,15 @@
-"""
-Script thực nghiệm Chương 2 — Đánh giá thuật toán `negFIN` trên 5 bộ dữ liệu benchmark
-(Chess, Mushroom, Accidents, Retail, T10I4D100K) và dữ liệu tổng hợp.
-
-Thực thi đủ 6 thực nghiệm bắt buộc:
-  1. Correctness (đối chiếu 100% Baseline vs. Optimized và SPMF nếu có JVM tương thích)
-  2. Runtime theo `minsup` (6 mốc/CSDL, trung vị 3 lần chạy sau warm-up JIT)
-  3. Output Size (số lượng frequent itemsets theo `minsup`)
-  4. Peak Memory / Heap Allocated (Baseline vs. Optimized ở mức `minsup` trung bình)
-  5. Scalability (10%, 25%, 50%, 75%, 100% giao dịch trên Retail và Accidents)
-  6. Ảnh hưởng của độ dài giao dịch trung bình (CSDL tổng hợp, `Random.seed!(42)`)
-
-Kết quả CSV được xuất vào `results/logs/`.
-"""
+# Script thực nghiệm Chương 2 — Đánh giá thuật toán `negFIN` trên 5 bộ dữ liệu benchmark
+# (Chess, Mushroom, Accidents, Retail, T10I4D100K) và dữ liệu tổng hợp.
+#
+# Thực thi đủ 6 thực nghiệm bắt buộc:
+#   1. Correctness (đối chiếu 100% Baseline vs. Optimized và SPMF nếu có JVM tương thích)
+#   2. Runtime theo `minsup` (6 mốc/CSDL, trung vị 3 lần chạy sau warm-up JIT)
+#   3. Output Size (số lượng frequent itemsets theo `minsup`)
+#   4. Peak Memory / Heap Allocated (Baseline vs. Optimized ở mức `minsup` trung bình)
+#   5. Scalability (10%, 25%, 50%, 75%, 100% giao dịch trên Retail và Accidents)
+#   6. Ảnh hưởng của độ dài giao dịch trung bình (CSDL tổng hợp, `Random.seed!(42)`)
+#
+# Kết quả CSV được xuất vào `results/logs/`.
 
 using Printf: @printf, @sprintf
 using Random: MersenneTwister

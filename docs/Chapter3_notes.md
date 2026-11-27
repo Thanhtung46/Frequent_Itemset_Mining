@@ -1,75 +1,63 @@
-# Ghi chú báo cáo Chương 3 — Ứng dụng thực tế của negFIN
+# Chương 3 – Ứng dụng thực tế negFIN, thuần Julia
 
-> Nội dung bổ trợ viết báo cáo, không phải kết quả thực nghiệm đã được chạy. Mọi số đo, bảng top-10 và hình minh họa thực tế phải lấy từ output của notebook sau khi chạy **thành công** với Julia.
+Đây là hướng dẫn **quy trình và cách giải thích** để nhóm tự viết báo cáo. Không phải kết quả thực nghiệm đã kiểm chứng. **Không điền số liệu tự tưởng tượng**; chạy notebook trên máy/Colab có Julia trước khi trích dẫn số liệu.
 
-## 3.1 Mục tiêu và nguyên tắc
+## Mục tiêu và nguồn thuật toán
 
-Chương 3 lựa chọn (i) phân tích giỏ hàng từ Groceries và (ii) khai thác mẫu trực quan từ UCI Digits. Nguồn frequent itemsets và support duy nhất của cả hai bài toán là cài đặt `negfin_baseline` Julia của nhóm. Mã Python không tự khai thác frequent itemsets bằng thư viện có sẵn.
+Hai ứng dụng dùng chính `negfin_baseline(...)` hoặc `negfin_optimized(...)` của nhóm trong `src/algorithm/`. Các file đó không được viết lại trong Chương 3. Python **không** dùng để khai thác itemset; Python kernel trên Colab chỉ gọi file Julia qua lệnh shell như quy định đồ án.
 
-## 3.2 Ứng dụng 1 — Phân tích giỏ hàng
+## Ứng dụng 1 — Market Basket Analysis
 
-### Dữ liệu và biểu diễn
+- **Nguồn**: Groceries – 9.835 giao dịch của cửa hàng bán lẻ, 169 nhóm sản phẩm theo tài liệu `arules`. Tải CSV từ nguồn được ghi trong `applications/market_basket.jl` vào `data/chapter3/groceries.csv` khi chạy lần đầu (máy cần Internet).
+- **Chuyển đổi**: mỗi dòng CSV là một giao dịch; bỏ ô rỗng, chuẩn hóa khoảng trắng, loại item lặp trong một giao dịch; từ điển sản phẩm xếp thứ tự chữ cái rồi ánh xạ sang ID nguyên 1..N. File `transactions.spmf` và `item_mapping.csv` cho phép tái hiện.
+- **Khai thác**: gọi `mine_itemsets` là cầu nối đến `negfin_baseline`/`negfin_optimized`. Có kiểm tra `support` bằng cách đếm giao dịch trực tiếp để phát hiện sai lệch.
+- **Sinh luật**: từ từng frequent itemset Z (|Z| >= 2), xét mọi tập con X khác rỗng và khác Z, Y = Z\X. Dùng support đã khai thác, không gọi thư viện luật kết hợp.
+  - `support(X→Y) = count(X∪Y)/N`
+  - `confidence(X→Y) = count(X∪Y)/count(X)`
+  - `lift(X→Y) = confidence(X→Y)/(count(Y)/N)`
+  - `leverage(X→Y) = support(X∪Y) − support(X) × support(Y)`
+- **Output**: `results/chapter3/market_basket/` chứa toàn bộ luật, `top10_lift.csv`, `top10_lift.svg`, mapping và summary. Diễn giải 10 luật đầu tiên **theo số liệu thực**. Lift lớn hơn 1 nói lên tương quan dương, **không chứng minh quan hệ nhân quả** hay lợi nhuận; cân nhắc support/confidence trước khi đề xuất nghiệp vụ.
 
-Dữ liệu **Groceries** có 9.835 hóa đơn trong 30 ngày, thuộc 169 loại sản phẩm theo tài liệu `arules` (Hahsler, Hornik và Reutterer). Mỗi dòng CSV là một hóa đơn; mỗi hàng hóa là một item, không đếm nhiều lần cùng một loại trong một hóa đơn. Ô trống bị bỏ qua. Mã hóa ID theo tên sản phẩm đã sắp từ điển để lần chạy sau cho cùng biểu diễn.
+## Ứng dụng 2 — Bag of Visual Words từ ảnh Digits
 
-### Luật kết hợp
+- **Nguồn**: UCI Optical Recognition of Handwritten Digits, bản 8×8 (1.797 ảnh) phân phối qua scikit-learn. CSV `data/chapter3/digits8x8.csv` được chuẩn bị sẵn từ bản công khai, **việc chạy ứng dụng không cần cài Python hoặc scikit-learn**. Chỉ phân tích các chữ số 0, 1, 3, 8; giới hạn tối đa 150 mẫu mỗi lớp nhằm rút ngắn thời gian demo.
+- **Tách dữ liệu**: chia train/test theo từng lớp (75%/25%) với seed `42`, không dùng nhãn để đưa vào giao dịch khai thác.
+- **Trích descriptor**: tự cài đặt 9 local descriptors/image trên lưới 3×3, mỗi descriptor gồm trung bình cường độ, độ lệch chuẩn và bốn đặc trưng hướng gradient dương/âm. Đây là **hand-crafted dense gradient descriptors**, **không phải SIFT/ORB**. Khác biệt này phải nêu rõ nếu trình bày.
+- **Codebook**: k-means tự cài bằng Julia, khởi tạo có seed, với mặc định K=16. Codebook chỉ học trên descriptor của ảnh **train**. Mỗi ảnh -> 9 descriptor -> centroid ID -> một transaction gồm các visual-word ID khác nhau; loại lặp trong cùng ảnh.
+- **Khai thác**: chạy negFIN trên tập giao dịch train, `minsup` mặc định 0.12; chọn tối đa 60 frequent patterns dài >= 2 để nghiên cứu. Nhãn ảnh chỉ dùng **sau** quá trình khai thác.
+- **Diễn giải**: `enrichment(P, C) = P(P xuất hiện | class = C) / P(P xuất hiện)` tính trên train. Giá trị lớn cho thấy pattern đặc trưng hơn cho lớp C, nhưng không cho phép khẳng định visual word ứng với một nét chữ cụ thể.
+- **Đánh giá ứng dụng**: cùng một bộ phân loại nearest-centroid tự cài, so sánh đặc trưng chỉ gồm visual words với visual words + frequent patterns, đo trên **test chưa được dùng trong bước chọn pattern**. Không giả định thêm pattern luôn cải thiện độ chính xác.
+- **Output**: `results/chapter3/visual_words/` gồm dữ liệu giao dịch, itemsets, codebook, mẫu ảnh SVG, pattern-enrichment CSV/SVG và so sánh accuracy.
 
-Với luật `X -> Y`, `X` và `Y` không rỗng và không giao nhau. `N` là tổng số giao dịch, `c(Z)` là số giao dịch chứa `Z`.
+**Giới hạn**: ảnh Digits 8×8 rất nhỏ và khác đáng kể ảnh tự nhiên (như CIFAR/Caltech); đặc trưng gradient tự cài không tương đương SIFT, và nearest-centroid chỉ là bộ phân loại minh họa. Nếu muốn đánh giá trên ảnh tự nhiên, cần thêm bộ dữ liệu và thiết kế descriptor phù hợp. Các hạn chế phải ghi trung thực trong báo cáo.
 
-- `support(X -> Y) = c(X union Y) / N`
-- `confidence(X -> Y) = c(X union Y) / c(X)`
-- `lift(X -> Y) = confidence(X -> Y) / support(Y)`
-- `leverage(X -> Y) = support(X union Y) - support(X)*support(Y)`
+## Chạy và kiểm tra
 
-Mặc định dùng `minsup = 0.01` và `minconf = 0.15`, xuất toàn bộ luật đủ ngưỡng và top-10 theo lift. Việc sinh luật được viết từ support do negFIN trả về. Kiểm chứng support bằng cách đếm trực tiếp mỗi itemset đã khai thác trên giao dịch gốc; đây **không** phải thuật toán FIM thay thế hay phép so khớp SPMF.
+```powershell
+julia --project=. tests/runtests.jl
+julia --project=. tests/test_ch3_julia.jl
+julia --project=. applications/run_market.jl
+julia --project=. applications/run_visual.jl
+```
 
-### Diễn giải kinh doanh
+Ngoài ra chạy `notebooks/demo.ipynb` trên Google Colab bằng **Python kernel nhưng chỉ dùng shell command** gọi Julia; notebook có bước tải Julia như đề bài.
 
-Luật có lift > 1 thể hiện quan hệ đồng xuất hiện mạnh hơn kỳ vọng độc lập, không chứng minh rằng mua X **gây ra** việc mua Y. Trước khi đề xuất khuyến mãi, cần đồng thời xem support và confidence, đánh giá độ phổ biến, và kiểm chứng bằng A/B test. Dữ liệu không chứa doanh thu, số lượng, giá bán, tồn kho nên không thể suy luận trực tiếp lợi nhuận.
+### Bảng điền sau khi chạy thực tế
 
-## 3.3 Ứng dụng 2 — Bag of Visual Words trên ảnh
-
-### Dữ liệu và biểu diễn
-
-Dùng bộ dữ liệu ảnh chữ số viết tay **UCI Digits** (phiên bản `sklearn.datasets.load_digits`: 1.797 ảnh 8×8, 10 lớp). Thử nghiệm lấy 4 lớp 0, 1, 3, 8 để kiểm tra pattern đặc trưng theo nhãn. Trước hết chia dữ liệu train/test 75/25 có stratify, seed = 42, tránh rò rỉ thông tin kiểm thử.
-
-Trên từng ảnh, tăng kích thước 8×8 lên 96×96 bằng nội suy bicubic; trích SIFT (Scale-Invariant Feature Transform) tại 4×4 điểm cố định, nhận 16 vector mô tả 128 chiều. K-means với K = 24, random_state = 42 được huấn luyện **chỉ trên descriptor ảnh train**. Mỗi descriptor gán cho một visual word; một ảnh là một giao dịch các ID visual word xuất hiện, ID bắt đầu từ 1. Loại bỏ số lần lặp của một word trong cùng ảnh theo đúng định nghĩa transaction set.
-
-### Khai thác pattern và phân tích
-
-Chạy negFIN trên **train transactions** với minsup = 0.08. Lấy itemset độ dài >= 2, tính độ giàu tính đặc trưng theo lớp:
-
-`enrichment(P, C) = P(P | C) / P(P)`
-
-Tính trên train đã có nhãn, **nhãn không được đưa vào transaction lúc khai thác**. Những pattern nhiều lần xuất hiện ở lớp C hơn tỉ lệ chung có thể liên hệ cấu trúc nét trong lớp đó, nhưng visual word là cụm trong không gian mô tả SIFT, không phải nhãn nét chữ rõ ràng như 'nét cong'.
-
-### Đánh giá downstream
-
-Chọn tối đa 100 pattern nhiều hỗ trợ từ train; tạo binary features cho cả train và test. So sánh cùng bộ phân loại Logistic Regression giữa (a) chỉ visual words và (b) visual words + frequent patterns. Báo cáo test accuracy; không giả định phiên bản có frequent patterns luôn tốt hơn. Lưu ý ảnh Digits độ phân giải thấp và không đại diện ảnh tự nhiên.
-
-## 3.4 Tái lập và kiểm thử
-
-- Chạy `python -m pytest -q tests/test_ch3.py` kiểm tra cấu trúc SPMF, phép sinh luật và xử lý ảnh.
-- Chạy cả 2 notebook từ trên xuống trên Colab có Julia, thu output/biểu đồ trong `results/chapter3/`.
-- Trong hai pipeline, support itemset negFIN được đếm trực tiếp để kiểm tra. Cần thêm so khớp SPMF đầy đủ như Chương 1 khi nhóm hoàn thiện.
-- Seed: 42. Các thư viện được pin major version ở `requirements-ch3.txt`. Môi trường Python và Julia nên được ghi cụ thể trong báo cáo.
-
-## 3.5 Điền số liệu thực tế sau khi chạy (không bịa số)
-
-| Phần | Số liệu cần điền | File sinh tự động |
-|---|---|---|
-| Market Basket | Số giao dịch, sản phẩm, itemset, luật | `market_basket/summary.json` |
-| Market Basket | Top-10 luật, support, confidence, lift | `market_basket/top10_by_lift.csv` |
-| Market Basket | Biểu đồ luật | `market_basket/top10_lift.png` |
-| Visual | Số ảnh train/test, số patterns | `visual_words/summary.json` |
-| Visual | Pattern đặc trưng từng lớp | `visual_words/patterns_by_class.csv` |
-| Visual | So sánh test accuracy | `visual_words/test_accuracy_comparison.csv` |
-| Visual | Biểu đồ phân tích | `visual_words/enriched_patterns.png` |
+| Dữ liệu cần báo cáo | File đầu ra |
+| --- | --- |
+| Số giao dịch, itemsets, luật; thời gian đào ngFIN | `market_basket/summary.txt` |
+| Top-10 luật support/confidence/lift | `market_basket/top10_lift.csv` |
+| Biểu đồ top-10 | `market_basket/top10_lift.svg` |
+| Số train/test, số pattern; accuracy | `visual_words/summary.txt` |
+| Mẫu đặc trưng theo từng lớp | `visual_words/patterns_by_class.csv` |
+| So sánh bộ phân loại | `visual_words/test_accuracy_comparison.csv` |
+| Biểu đồ enrichment, ảnh ví dụ | `visual_words/enriched_patterns.svg`, `digits_samples.svg` |
 
 ## Nguồn tham khảo
 
-1. Aryabarzan, Minaei-Bidgoli, Teshnehlab (2018). *negFIN: An efficient algorithm for fast mining frequent itemsets*. Expert Systems With Applications, 105, 129–143. (Bản PDF do nhóm cung cấp.)
-2. Hahsler, Hornik, Reutterer (2006). *Implications of probabilistic data modeling for mining association rules*. Tài liệu nguồn Groceries: https://michael.hahsler.net/arules/reference/Groceries.html
-3. scikit-learn: *load_digits*. https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html
-4. Lowe (2004). *Distinctive Image Features from Scale-Invariant Keypoints*. International Journal of Computer Vision.
-5. Sivic & Zisserman (2003). *Video Google: A Text Retrieval Approach to Object Matching in Videos*. ICCV.
+1. [Đề bài FIM chính thức](https://hcmus-cs-ta.github.io/lab-book/data-mining/projects/itemset/).
+2. [Hahsler et al., tài liệu dữ liệu Groceries](https://michael.hahsler.net/arules/reference/Groceries.html).
+3. [scikit-learn: load_digits (mô tả ảnh 8×8)](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html).
+4. [negFIN: bài báo gốc – DOI](https://doi.org/10.1016/j.eswa.2018.03.041).
+5. Sivic, J., Zisserman, A. (2003), *Video Google: A Text Retrieval Approach to Object Matching in Videos*, ICCV.

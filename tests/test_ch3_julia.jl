@@ -1,51 +1,81 @@
-# Kiểm tra độc lập negFIN bằng brute-force trên CSDL nhỏ.
-# Chạy: julia --project=. tests/test_ch3_julia.jl
-
+# Independent tests for Chapter 3 (without external datasets or Python).
+# Run: julia --project=. tests/test_ch3_julia.jl
 using Test
-include(joinpath(@__DIR__, "..", "src", "application_mining.jl"))
+include(joinpath(@__DIR__, "..", "applications", "Chapter3.jl"))
+using .Chapter3
 
-function brute_counts(txs::Vector{Vector{Int}}, threshold::Int)
-    universe = sort(unique(vcat(txs...)))
-    result = Dict{Tuple{Vararg{Int}}, Int}()
-    for mask in 1:(2^length(universe) - 1)
-        candidate = [universe[i] for i in eachindex(universe) if (mask & (1 << (i - 1))) != 0]
-        count = sum(all(item in tx for item in candidate) for tx in txs)
-        if count >= threshold
-            result[Tuple(candidate)] = count
+@testset "Chapter 3 Julia applications" begin
+    @testset "negFIN integration and support" begin
+        txs = [[1,2], [1,2], [1,3], [2,3]]
+        frequent = mine_itemsets(txs, 0.5)
+        @test frequent[(1,)] == 3
+        @test frequent[(2,)] == 3
+        @test frequent[(3,)] == 2
+        @test frequent[(1,2)] == 2
+        @test !haskey(frequent, (1,2,3))
+        @test Chapter3.validate_support(txs, frequent)
+        @test mine_itemsets(txs, 0.5; algo=:optimized) == frequent
+    end
+
+    @testset "association rules and lift" begin
+        txs = [[1,2], [1,2], [1,3], [2,3]]
+        frequent = mine_itemsets(txs, 0.5)
+        rules = association_rules(frequent, 4; minconf=0.6, minsup=0.5)
+        rule = only([r for r in rules if r.lhs == [1] && r.rhs == [2]])
+        @test rule.count == 2
+        @test isapprox(rule.confidence, 2/3)
+        @test isapprox(rule.lift, 8/9)
+    end
+
+    @testset "market input, output and naming" begin
+        mktempdir() do dir
+            source = joinpath(dir, "baskets.csv")
+            open(source, "w") do io
+                println(io, "apple,milk,")
+                println(io, "milk,apple,")
+                println(io, "apple,bread,")
+                println(io, "milk,bread,")
+            end
+            baskets = load_baskets(source)
+            txs, names = encode_baskets(baskets)
+            @test length(txs) == 4
+            @test names == ["apple", "bread", "milk"]
+            summary = run_market_basket(; csv_path=source, minsup=0.5,
+                minconf=0.3, output_dir=joinpath(dir, "market"),
+                download_if_missing=false)
+            @test summary.transactions == 4
+            @test isfile(joinpath(dir, "market", "top10_lift.csv"))
+            @test isfile(joinpath(dir, "market", "frequent_itemsets.spmf"))
         end
     end
-    return result
-end
 
-@testset "Chuong 3: negFIN nho + CLI" begin
-    fixtures = [
-        [[1, 2], [2, 3], [1, 2, 3], [1]],
-        [[1, 1, 3], [1, 3], [1, 3]],
-        [[2], [3], [4], [2, 3, 4]],
-        [[1, 2, 3], [1, 2, 3], [1, 2, 3]],
-        [[1, 4], [2, 4], [1, 2, 4], [2, 3]],
-    ]
-    for txs in fixtures
-        minsup = 0.5
-        threshold = ceil(Int, length(txs) * minsup)
-        target = brute_counts(txs, threshold)
-        actual = Dict(Tuple(sort(unique(items))) => sup for (items, sup) in negfin_baseline(txs, minsup))
-        @test actual == target
+    @testset "repeatable visual descriptors and k-means" begin
+        img1 = zeros(8, 8)
+        img2 = zeros(8, 8); img2[:, 3:5] .= 15.0
+        features = Chapter3.collect_descriptors([img1, img2, img1, img2])
+        @test size(features) == (36, 6)
+        @test Chapter3.dense_descriptors(img1) == Chapter3.dense_descriptors(img1)
+        codebook_a = learn_codebook(features; words=3, seed=42, max_iter=10)
+        codebook_b = learn_codebook(features; words=3, seed=42, max_iter=10)
+        @test codebook_a == codebook_b
+        transactions = visual_transactions([img1, img2], codebook_a)
+        @test length(transactions) == 2
+        @test all(tx -> all(x -> 1 <= x <= 3, tx), transactions)
     end
-    @test resolve_min_sup_count(9, 0.3) == 3
-    @test resolve_min_sup_count(9, 3.0) == 3
 
-    mktempdir() do directory
-        input_file = joinpath(directory, "transaction.spmf")
-        output_file = joinpath(directory, "out.spmf")
-        open(input_file, "w") do io
-            println(io, "1 2")
-            println(io, "2 3")
-            println(io, "1 2 3")
-            println(io, "1")
+    @testset "visual pipeline on real Digits subset" begin
+        data = joinpath(Chapter3.ROOT, "data", "chapter3", "digits8x8.csv")
+        imgs, labels = read_digits(data)
+        @test length(imgs) > 500
+        @test Set(labels) == Set([0,1,3,8])
+        mktempdir() do dir
+            run = run_visual_words(; data_path=data, minsup=0.25, words=6,
+                max_per_class=12, output_dir=dir)
+            @test run.train > 0 && run.test > 0
+            @test 0 <= run.base_accuracy <= 1
+            @test 0 <= run.pattern_accuracy <= 1
+            @test isfile(joinpath(dir, "test_accuracy_comparison.csv"))
+            @test isfile(joinpath(dir, "train_frequent_itemsets.spmf"))
         end
-        main(["--input", input_file, "--output", output_file, "--minsup", "0.5"])
-        @test isfile(output_file)
-        @test occursin("#SUP:", read(output_file, String))
     end
 end

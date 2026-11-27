@@ -1,6 +1,4 @@
-"""
-Đọc/ghi dữ liệu theo định dạng chuẩn SPMF và các hàm tiện ích hỗ trợ `negFIN`.
-"""
+# Đọc/ghi dữ liệu theo định dạng chuẩn SPMF và các hàm tiện ích hỗ trợ `negFIN`.
 
 const SPMF_SUP_TAG = "#SUP:"
 

@@ -1,9 +1,7 @@
-"""
-Entry-point dòng lệnh (CLI) cho thuật toán `negFIN`.
-Ví dụ:
-    julia --project=. src/main.jl --input data/toy/paper_example1.txt \\
-        --output out.txt --minsup 0.4 --algo optimized --stats
-"""
+# Entry-point dòng lệnh (CLI) cho thuật toán `negFIN`.
+# Ví dụ:
+#     julia --project=. src/main.jl --input data/toy/paper_example1.txt \\
+#         --output out.txt --minsup 0.4 --algo optimized --stats
 
 using Printf: @printf
 
