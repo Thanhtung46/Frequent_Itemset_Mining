@@ -8,8 +8,8 @@ Cài đặt, tối ưu hóa và đánh giá thực nghiệm thuật toán **negF
 
 | STT | Họ và tên | MSSV | Vai trò / Phụ trách chính |
 | :---: | :--- | :---: | :--- |
-| 1 | `[Họ và tên thành viên 1]` | `[MSSV 1]` | Cài đặt thuật toán `negFIN` (Baseline & Optimized), Unit Tests, CLI |
-| 2 | `[Họ và tên thành viên 2]` | `[MSSV 2]` | Thực nghiệm Chương 2, Ứng dụng thực tế Chương 3, Báo cáo IEEE |
+| 1 | `Nguyễn Thanh Tùngh` | `24127583` | Cài đặt thuật toán `negFIN` (Baseline & Optimized), Unit Tests, CLI |
+| 2 | `Nguyễn Tuấn Khanh` | `24127415` | Thực nghiệm Chương 2, Ứng dụng thực tế Chương 3, Báo cáo IEEE |
 
 ---
 
