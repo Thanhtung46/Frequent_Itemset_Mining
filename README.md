@@ -27,7 +27,17 @@ Toàn bộ notebook trong `notebooks/colab/` đều chạy trực tiếp bằng 
 | **Bài báo gốc (`negFIN`)** | [DOI: 10.1016/j.eswa.2018.03.041](https://doi.org/10.1016/j.eswa.2018.03.041) | Aryabarzan et al. (2018), *negFIN: An efficient algorithm for fast mining frequent itemsets* |
 | **Thư viện đối chiếu (`SPMF`)** | https://www.philippe-fournier-viger.com/spmf/ | Dùng `spmf.jar` (`NegFIN`) làm Ground Truth kiểm chứng 100% |
 
-> **Ghi chú về nguồn gốc dữ liệu (*Data Provenance & Mirror*):** Toàn bộ 7 bộ dữ liệu thực nghiệm được thu thập nguyên vẹn từ các nguồn học thuật công khai chuẩn (**FIMI / SPMF** cho 5 bộ benchmark Chương 2; gói R **`arules`** cho `Groceries` và **UCI Machine Learning Repository** cho `Digits 8×8` ở Chương 3). Kho Hugging Face `stephent9/Lab1_Frequent_Itemset_Mining` đóng vai trò **bản sao lưu công khai (*public mirror*)**, giữ nguyên định dạng gốc nhằm đảm bảo tốc độ tải ổn định và khả năng tái lập (*reproducibility*) 100% khi chạy trên Google Colab.
+> **Ghi chú về nguồn gốc dữ liệu (*Data Provenance & Mirror*):** Toàn bộ 7 bộ dữ liệu thực nghiệm được thu thập nguyên vẹn từ các nguồn học thuật công khai chuẩn:
+> - **Chương 2 (5 bộ benchmark):** [SPMF / FIMI Public Datasets](https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php) (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`).
+> - **Chương 3 — `Groceries`:** gói R [`arules` (Hahsler et al., 2006)](https://michael.hahsler.net/arules/reference/Groceries.html).
+> - **Chương 3 — `Digits 8×8`:** [UCI Machine Learning Repository — Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits) (xuất qua [`sklearn.datasets.load_digits`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html)).
+> - **Bản sao lưu công khai (*Public Mirror*):** Toàn bộ 7 tệp nguyên bản được lưu trữ tại [Hugging Face (`stephent9/Lab1_Frequent_Itemset_Mining`)](https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining) nhằm đảm bảo tốc độ tải ổn định và khả năng tái lập (*reproducibility*) 100% khi chạy trên Google Colab.
+
+> **Ghi chú về nguồn gốc dữ liệu (*Data Provenance & Mirror*):** Toàn bộ 7 bộ dữ liệu thực nghiệm được thu thập nguyên vẹn từ các nguồn học thuật công khai chuẩn:
+> - **Chương 2 (5 bộ benchmark):** [SPMF / FIMI Public Datasets](https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php) (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`).
+> - **Chương 3 — `Groceries`:** gói R [`arules` (Hahsler et al., 2006)](https://michael.hahsler.net/arules/reference/Groceries.html).
+> - **Chương 3 — `Digits 8×8`:** [UCI Machine Learning Repository — Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits) (xuất qua [`sklearn.datasets.load_digits`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html)).
+> - **Bản sao lưu công khai (*Public Mirror*):** Toàn bộ 7 tệp nguyên bản được lưu trữ tại [Hugging Face (`stephent9/Lab1_Frequent_Itemset_Mining`)](https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining) nhằm đảm bảo tốc độ tải ổn định và khả năng tái lập (*reproducibility*) 100% khi chạy trên Google Colab.
 
 ---
 

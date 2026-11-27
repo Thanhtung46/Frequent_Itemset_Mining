@@ -301,7 +301,7 @@ Toàn bộ thực nghiệm Chương 2 được thực thi tự động qua \text
     \item Mọi bước sinh dữ liệu tổng hợp đều cố định hạt giống \texttt{MersenneTwister(42 + i)}.
 \end{itemize}
 
-Chúng tôi đánh giá trên đầy đủ \textbf{5/5 bộ dữ liệu benchmark chuẩn} có nguồn gốc từ kho FIMI/SPMF (trùng khớp Table 2 của bài báo gốc~\cite{b9}), được giữ nguyên định dạng SPMF và lưu trữ công khai (mirror) trên Hugging Face (\url{https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining}) để phục vụ tải tự động trong quá trình tái thực hiện, tóm tắt tại Bảng~\ref{tab:datasets}.
+Chúng tôi đánh giá trên đầy đủ \textbf{5/5 bộ dữ liệu benchmark chuẩn} có nguồn gốc từ kho \href{https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php}{FIMI/SPMF}~\cite{b12} (trùng khớp Table 2 của bài báo gốc~\cite{b9}), được giữ nguyên định dạng SPMF và lưu trữ công khai (\textit{public mirror}) trên Hugging Face (\url{https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining}) để phục vụ tải tự động trong quá trình tái thực hiện, tóm tắt tại Bảng~\ref{tab:datasets}.
 
 \begin{table}[htbp]
 \caption{Đặc trưng 5 bộ dữ liệu Benchmark chuẩn SPMF sử dụng trong Chương 2}
@@ -536,7 +536,7 @@ Từ các phân tích thực nghiệm trên, chúng tôi đề xuất \textbf{3 
 % ==============================================================================
 
 \subsection{Kiến trúc Tích hợp Thuần Julia}
-Nguyên tắc cốt lõi của Chương 3 là \textbf{toàn bộ tập phổ biến ở cả hai ứng dụng đều được khai thác trực tiếp bằng hàm \texttt{negfin\_optimized} (và đối chiếu được với \texttt{negfin\_baseline}) tự viết của nhóm} trong \texttt{src/algorithm/}, tuyệt đối không sử dụng thư viện FIM ngoài hay mã ứng dụng Python. Module \texttt{src/applications/applications.jl} nạp trực tiếp mã nguồn Chương 1 và cung cấp hai ứng dụng độc lập cùng bộ kiểm thử tự động \texttt{tests/test\_ch3\_julia.jl} (\textbf{27/27 PASS}). Mọi kết quả đều trải qua bước kiểm chứng chéo \texttt{validate\_support} đếm trực tiếp trên giao dịch gốc (\texttt{Support cross-check: PASS}). Hai tệp dữ liệu nguyên bản (\texttt{groceries.csv} từ gói R \texttt{arules}~\cite{b10} và \texttt{digits8x8.csv} từ UCI ML Repository) cũng được lưu trữ dưới dạng bản sao lưu công khai (\textit{public mirror}) tại cùng kho Hugging Face của nhóm để tự động tải khi chạy trên Google Colab.
+Nguyên tắc cốt lõi của Chương 3 là \textbf{toàn bộ tập phổ biến ở cả hai ứng dụng đều được khai thác trực tiếp bằng hàm \texttt{negfin\_optimized} (và đối chiếu được với \texttt{negfin\_baseline}) tự viết của nhóm} trong \texttt{src/algorithm/}, tuyệt đối không sử dụng thư viện FIM ngoài hay mã ứng dụng Python. Module \texttt{src/applications/applications.jl} nạp trực tiếp mã nguồn Chương 1 và cung cấp hai ứng dụng độc lập cùng bộ kiểm thử tự động \texttt{tests/test\_ch3\_julia.jl} (\textbf{27/27 PASS}). Mọi kết quả đều trải qua bước kiểm chứng chéo \texttt{validate\_support} đếm trực tiếp trên giao dịch gốc (\texttt{Support cross-check: PASS}). Hai tệp dữ liệu nguyên bản (\texttt{groceries.csv} từ gói R \href{https://michael.hahsler.net/arules/reference/Groceries.html}{\texttt{arules}}~\cite{b10} và \texttt{digits8x8.csv} từ \href{https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits}{UCI ML Repository}~\cite{b13}) cũng được lưu trữ dưới dạng bản sao lưu công khai (\textit{public mirror}) tại \href{https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining}{kho Hugging Face} của nhóm để tự động tải khi chạy trên Google Colab.
 
 \subsection{Ứng dụng 1: Phân tích Giỏ hàng (\textit{Market Basket Analysis})}
 
@@ -696,7 +696,7 @@ Local NBs & \texttt{notebooks/local/*.ipynb} (Pure Julia) \\
 % ==============================================================================
 Đồ án đã hoàn thành toàn diện cả ba chương nghiên cứu, cài đặt và ứng dụng thuật toán \texttt{negFIN} bằng ngôn ngữ \textbf{Julia}:
 \begin{enumerate}
-    \item Cài đặt chính xác 100\% thuật toán \texttt{negFIN} theo bài báo gốc (Aryabarzan et al., 2018) với đầy đủ 4 bậc, đạt 56/56 kiểm thử tự động thành công, kèm phiên bản tối ưu hóa Julia-native tận dụng Multiple Dispatch bit-packing, LCRS \texttt{BMC-tree}, SoA \texttt{NodeSet}, Early-Abort và xuất Promotion không cấp phát \texttt{FIS\_parent}.
+    \item Cài đặt chính xác 100\% thuật toán \texttt{negFIN} theo bài báo gốc (Aryabarzan et al., 2018) với đầy đủ 4 bậc, đạt 66/66 kiểm thử tự động thành công, kèm phiên bản tối ưu hóa Julia-native tận dụng Multiple Dispatch bit-packing, LCRS \texttt{BMC-tree}, SoA \texttt{NodeSet}, Early-Abort và xuất Promotion không cấp phát \texttt{FIS\_parent}.
     \item Hoàn tất 6 thực nghiệm định lượng trên 5 bộ dữ liệu chuẩn công khai tại Hugging Face và dữ liệu tổng hợp, chứng minh tốc độ tăng lên đến \textbf{3.26$\times$} trên benchmark thực (\textbf{4.88$\times$} trên giao dịch dài), giảm \textbf{27.5\%--69.5\%} Heap cấp phát và mở rộng tuyến tính $O(|DB|)$.
     \item Triển khai thành công hai ứng dụng thực tế thuần Julia gọi trực tiếp mã nguồn \texttt{negFIN} của nhóm trên dữ liệu \texttt{Groceries} (9,835 giao dịch, Top-10 Lift đạt 3.37) và ảnh \texttt{UCI Digits} (BoVW + K-means tự cài, Enrichment đạt 4.00), có đầy đủ notebook Google Colab tái lập 100\%.
 \end{enumerate}
@@ -724,9 +724,13 @@ Trong tương lai, nhóm dự kiến triển khai song song hóa đa luồng \te
 
 \bibitem{b9} N. Aryabarzan, B. Minaei-Bidgoli, and M. Teshnehlab, ``negFIN: An efficient algorithm for fast mining frequent itemsets,'' \textit{Expert Syst. Appl.}, vol. 105, pp. 129--143, Sep. 2018.
 
-\bibitem{b10} M. Hahsler, K. Hornik, and T. Reutterer, ``Implications of probabilistic data modeling for mining association rules,'' in \textit{From Data and Information Analysis to Knowledge Engineering}, Springer, 2006, pp. 598--605.
+\bibitem{b10} M. Hahsler, K. Hornik, and T. Reutterer, ``Implications of probabilistic data modeling for mining association rules,'' in \textit{From Data and Information Analysis to Knowledge Engineering}, Springer, 2006, pp. 598--605. [Online]. Available: \url{https://michael.hahsler.net/arules/reference/Groceries.html}
 
 \bibitem{b11} J. Sivic and A. Zisserman, ``Video Google: A text retrieval approach to object matching in videos,'' in \textit{Proc. 9th IEEE Int. Conf. Computer Vision (ICCV)}, 2003, pp. 1470--1477.
+
+\bibitem{b12} P. Fournier-Viger et al., ``The SPMF Open-Source Data Mining Library Version 2,'' in \textit{Proc. ECML PKDD}, 2016, pp. 36--40. [Online]. Available: \url{https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php}
+
+\bibitem{b13} E. Alpaydin and C. Kaynak, ``Optical Recognition of Handwritten Digits,'' UCI Machine Learning Repository, 1998. [Online]. Available: \url{https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits}
 
 \end{thebibliography}
 
