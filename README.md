@@ -17,8 +17,8 @@ Cài đặt, tối ưu hóa và đánh giá thực nghiệm thuật toán **negF
 
 | Tài nguyên | Liên kết | Ghi chú |
 | :--- | :--- | :--- |
-| **Google Colab (Chương 2)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/ch2_experiments.ipynb) | Chạy bằng **Julia Runtime**, tự động tải 5 bộ benchmark từ Hugging Face |
-| **Google Colab (Demo Chương 3)** | [Mở notebook demo Chương 3](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/demo.ipynb) | Chạy 2 ứng dụng Julia; **không** tự chạy lại benchmark Chương 2 |
+| **Google Colab (Chương 2)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/colab/01_ch2_experiments.ipynb) | Chạy bằng **Julia Runtime**, tự động tải 5 bộ benchmark từ Hugging Face |
+| **Google Colab (Demo Chương 3)** | [Mở notebook demo Chương 3](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/colab/04_ch3_all_applications.ipynb) | Chạy bằng **Julia Runtime** (2 ứng dụng Julia); **không** tự chạy lại benchmark Chương 2 |
 | **Bộ dữ liệu Benchmark (Hugging Face)** | https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining | 5 bộ chuẩn SPMF: `chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K` |
 | **Bài báo gốc (`negFIN`)** | [DOI: 10.1016/j.eswa.2018.03.041](https://doi.org/10.1016/j.eswa.2018.03.041) | Aryabarzan et al. (2018), *negFIN: An efficient algorithm for fast mining frequent itemsets* |
 | **Thư viện đối chiếu (`SPMF`)** | https://www.philippe-fournier-viger.com/spmf/ | Dùng `spmf.jar` làm chuẩn đối chiếu Ground Truth |
@@ -39,17 +39,16 @@ Frequent_Itemset_Mining/
 │   ├── algorithm/                # Cài đặt chính thuật toán negFIN
 │   │   ├── negfin_baseline.jl    # Phiên bản cơ bản bám sát giả mã Algorithm 1–4 (BitVector)
 │   │   └── negfin_optimized.jl   # Phiên bản tối ưu (UInt64/UInt128/NTuple, Early-Abort, zero-alloc)
+│   ├── applications/             # Cả hai ứng dụng Chương 3 thuần Julia
+│   │   ├── applications.jl       # Module Applications, import thuật toán negFIN của nhóm
+│   │   ├── app_utils.jl          # Cầu nối negFIN, kiểm chứng support, CSV/SPMF/SVG
+│   │   ├── market_basket.jl      # Phân tích giỏ hàng Groceries và luật kết hợp
+│   │   ├── visual_words.jl       # Đặc trưng gradient, K-means, Bag of Visual Words
+│   │   ├── run_market_basket.jl  # CLI ứng dụng giỏ hàng
+│   │   └── run_visual_words.jl   # CLI ứng dụng ảnh
 │   ├── main.jl                   # Entry-point CLI Chương 1 (--input, --output, --minsup, --algo, --stats)
-│   ├── application_mining.jl     # CLI SPMF bổ sung (không phải entry-point 2 ứng dụng Chương 3)
 │   ├── structures.jl             # Cấu trúc BMC-tree (LCRS), NodeSet (SoA), Multiple Dispatch bit-packing
 │   └── utils.jl                  # Đọc/ghi chuẩn SPMF, đối chiếu kết quả 100%
-├── applications/                 # Cả hai ứng dụng Chương 3 thuần Julia
-│   ├── Chapter3.jl               # Module, import lại thuật toán negFIN của nhóm
-│   ├── common.jl                 # Gọi negFIN, giao dịch, CSV, SPMF, SVG
-│   ├── market_basket.jl          # Phân tích giỏ hàng Groceries và luật kết hợp
-│   ├── visual_words.jl           # Đặc trưng gradient, K-means, Bag of Visual Words
-│   ├── run_market.jl             # CLI ứng dụng giỏ hàng
-│   └── run_visual.jl             # CLI ứng dụng ảnh
 ├── scripts/
 │   └── run_benchmarks.jl         # Script chạy tự động 6 thực nghiệm Chương 2, xuất CSV
 ├── tests/
@@ -63,10 +62,16 @@ Frequent_Itemset_Mining/
 │   ├── synthetic/                # Dữ liệu tổng hợp kiểm thử độ dài giao dịch & scalability
 │   └── chapter3/                 # Digits CSV + SOURCE.md, Groceries được tải khi chạy
 ├── notebooks/
-│   ├── ch2_experiments.ipynb     # Notebook Julia của Chương 2
-│   ├── demo.ipynb                # Colab demo 2 ứng dụng Chương 3
-│   ├── ch3_market_basket.ipynb   # Colab ứng dụng giỏ hàng
-│   └── ch3_visual_words.ipynb   # Colab ứng dụng ảnh
+│   ├── colab/                    # Phiên bản Google Colab (100% Pure Julia Runtime)
+│   │   ├── 01_ch2_experiments.ipynb
+│   │   ├── 02_ch3_app1_market_basket.ipynb
+│   │   ├── 03_ch3_app2_visual_words.ipynb
+│   │   └── 04_ch3_all_applications.ipynb
+│   └── local/                    # Phiên bản Local (100% Pure Julia, không cần setup)
+│       ├── 01_ch2_experiments.ipynb
+│       ├── 02_ch3_app1_market_basket.ipynb
+│       ├── 03_ch3_app2_visual_words.ipynb
+│       └── 04_ch3_all_applications.ipynb
 ├── results/
 │   ├── logs/                     # Bảng số liệu CSV của 6 thực nghiệm Chương 2
 │   ├── figures/                  # Biểu đồ Chương 2
@@ -115,8 +120,9 @@ julia --project=. src/main.jl \
 ```
 
 ### Bước 4: Chạy toàn bộ 6 thực nghiệm Chương 2
-- **Cách 1 (Khuyên dùng — Google Colab / Jupyter Julia Kernel):** Mở [notebooks/ch2_experiments.ipynb](notebooks/ch2_experiments.ipynb) và chọn **Run All** (tự động tải 5 bộ dữ liệu từ Hugging Face, chạy benchmark và vẽ toàn bộ biểu đồ).
-- **Cách 2 (Chạy CLI trên máy local sau khi đã có 5 file trong `data/benchmark/`):**
+- **Cách 1 (Google Colab — Julia Kernel):** Mở [notebooks/colab/01_ch2_experiments.ipynb](notebooks/colab/01_ch2_experiments.ipynb) và chọn **Run All** (tự động tải 5 bộ dữ liệu từ Hugging Face, chạy benchmark và vẽ toàn bộ biểu đồ).
+- **Cách 2 (Local — Julia Kernel):** Mở [notebooks/local/01_ch2_experiments.ipynb](notebooks/local/01_ch2_experiments.ipynb) trên VS Code / Jupyter.
+- **Cách 3 (Chạy CLI trên máy local sau khi đã có 5 file trong `data/benchmark/`):**
 ```bash
 julia --project=. scripts/run_benchmarks.jl
 ```
@@ -144,7 +150,7 @@ NegFIN Test Suite |   29     29  3.8s
 
 ## 6. Chương 3 – Hai ứng dụng thuần Julia
 
-Chương 3 sử dụng lại thuật toán **negFIN** trong `src/algorithm/` của nhóm. Hai ứng dụng thuộc `applications/*.jl`, không còn cần các file `.py` hay `requirements-ch3.txt` của bản cũ. Không cần `pip`, `pandas`, `scikit-learn` hay `OpenCV` để chạy ứng dụng trên máy cá nhân.
+Chương 3 sử dụng lại thuật toán **negFIN** trong `src/algorithm/` của nhóm. Hai ứng dụng thuộc `src/applications/*.jl`, không còn cần các file `.py` hay `requirements-ch3.txt` của bản cũ. Không cần `pip`, `pandas`, `scikit-learn` hay `OpenCV` để chạy ứng dụng trên máy cá nhân.
 
 | Ứng dụng | Thực hiện bằng Julia | Đầu ra chính |
 | --- | --- | --- |
@@ -160,26 +166,26 @@ julia --version
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
 julia --project=. tests/runtests.jl
 julia --project=. tests/test_ch3_julia.jl
-julia --project=. applications/run_market.jl
-julia --project=. applications/run_visual.jl
+julia --project=. src/applications/run_market_basket.jl
+julia --project=. src/applications/run_visual_words.jl
 ```
 
 Điều chỉnh tham số, nếu cần:
 
 ```powershell
-julia --project=. applications/run_market.jl --minsup 0.01 --minconf 0.15 --algo baseline
-julia --project=. applications/run_visual.jl --minsup 0.12 --words 16 --seed 42 --algo baseline
+julia --project=. src/applications/run_market_basket.jl --minsup 0.01 --minconf 0.15 --algo baseline
+julia --project=. src/applications/run_visual_words.jl --minsup 0.12 --words 16 --seed 42 --algo baseline
 ```
 
 Để so sánh bản tối ưu của nhóm, đổi `--algo baseline` thành `--algo optimized`. Groceries tự tải từ nguồn công khai khi chạy lần đầu; Digits CSV đã có tại `data/chapter3/digits8x8.csv`. Cả hai ứng dụng xuất CSV, SPMF, SVG và `summary.txt` tại `results/chapter3/`.
 
-### Google Colab: Vì sao metadata vẫn ghi `Python 3`?
+### Google Colab & Local Notebooks (100% Pure Julia)
 
-[**Mở demo Chương 3 trên Colab**](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/demo.ipynb) · [Notebook Market Basket](notebooks/ch3_market_basket.ipynb) · [Notebook Visual Words](notebooks/ch3_visual_words.ipynb).
+[**Mở demo Chương 3 trên Colab**](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/colab/04_ch3_all_applications.ipynb) · [Colab Market Basket](notebooks/colab/02_ch3_app1_market_basket.ipynb) · [Colab Visual Words](notebooks/colab/03_ch3_app2_visual_words.ipynb) · [Bản Local Pure Julia](notebooks/local/04_ch3_all_applications.ipynb).
 
-Colab sử dụng **Python 3 kernel mặc định chỉ để chạy `%%bash` và `!julia`** (cài Julia và chạy `.jl`). **Không có thuật toán Python** trong ba notebook. Giữ metadata Python để tương thích với các ô shell hiện có; không tự chuyển kernel sang Julia nếu chưa chuyển cú pháp notebook. Liên kết GitHub chỉ hoạt động sau khi các file được push lên nhánh `main` có thể truy cập.
+Cả 4 notebook trong `notebooks/colab/` đều chạy trực tiếp trên **Google Colab Julia Runtime** (`Runtime -> Change runtime type -> Julia`), tự động clone repository và hiển thị trực tiếp biểu đồ SVG/PNG.
 
-**Notebook `demo.ipynb` chỉ chạy Chương 3**, không tự chạy Chương 2. Chương 2 có notebook riêng `notebooks/ch2_experiments.ipynb`.
+**Notebook `04_ch3_all_applications.ipynb` chỉ chạy Chương 3**, không tự chạy Chương 2. Chương 2 có notebook riêng `notebooks/colab/01_ch2_experiments.ipynb` (Colab) và `notebooks/local/01_ch2_experiments.ipynb` (Local).
 
 ### Tài liệu và xác minh kết quả
 

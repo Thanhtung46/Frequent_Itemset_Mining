@@ -120,7 +120,7 @@ function run_spmf_negfin(java_bin::String, input_path::String, min_sup::Float64)
         t0 = time_ns()
         run(
             pipeline(
-                `$java_bin -jar $SPMF_JAR run negFIN $input_path $out_tmp $pct_str`;
+                `$java_bin -jar $SPMF_JAR run NegFIN $input_path $out_tmp $pct_str`;
                 stdout=devnull,
                 stderr=devnull,
             ),

@@ -253,7 +253,7 @@ end
                     end
                     pct_str = string(round(min_sup * 100; digits=4), "%")
                     spmf_cmd = Cmd([
-                        java_bin, "-jar", spmf_jar, "run", "negFIN",
+                        java_bin, "-jar", spmf_jar, "run", "NegFIN",
                         in_tmp, out_spmf, pct_str,
                     ])
                     run(pipeline(spmf_cmd; stdout=devnull, stderr=devnull))

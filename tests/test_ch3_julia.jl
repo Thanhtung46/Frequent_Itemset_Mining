@@ -1,8 +1,8 @@
 # Independent tests for Chapter 3 (without external datasets or Python).
 # Run: julia --project=. tests/test_ch3_julia.jl
 using Test
-include(joinpath(@__DIR__, "..", "applications", "Chapter3.jl"))
-using .Chapter3
+include(joinpath(@__DIR__, "..", "src", "applications", "applications.jl"))
+using .Applications
 
 @testset "Chapter 3 Julia applications" begin
     @testset "negFIN integration and support" begin
@@ -13,7 +13,7 @@ using .Chapter3
         @test frequent[(3,)] == 2
         @test frequent[(1,2)] == 2
         @test !haskey(frequent, (1,2,3))
-        @test Chapter3.validate_support(txs, frequent)
+        @test Applications.validate_support(txs, frequent)
         @test mine_itemsets(txs, 0.5; algo=:optimized) == frequent
     end
 
@@ -52,9 +52,9 @@ using .Chapter3
     @testset "repeatable visual descriptors and k-means" begin
         img1 = zeros(8, 8)
         img2 = zeros(8, 8); img2[:, 3:5] .= 15.0
-        features = Chapter3.collect_descriptors([img1, img2, img1, img2])
+        features = Applications.collect_descriptors([img1, img2, img1, img2])
         @test size(features) == (36, 6)
-        @test Chapter3.dense_descriptors(img1) == Chapter3.dense_descriptors(img1)
+        @test Applications.dense_descriptors(img1) == Applications.dense_descriptors(img1)
         codebook_a = learn_codebook(features; words=3, seed=42, max_iter=10)
         codebook_b = learn_codebook(features; words=3, seed=42, max_iter=10)
         @test codebook_a == codebook_b
@@ -64,7 +64,7 @@ using .Chapter3
     end
 
     @testset "visual pipeline on real Digits subset" begin
-        data = joinpath(Chapter3.ROOT, "data", "chapter3", "digits8x8.csv")
+        data = joinpath(Applications.ROOT, "data", "chapter3", "digits8x8.csv")
         imgs, labels = read_digits(data)
         @test length(imgs) > 500
         @test Set(labels) == Set([0,1,3,8])
