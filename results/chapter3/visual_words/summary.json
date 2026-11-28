@@ -1,0 +1,30 @@
+{
+  "dataset": "UCI optical recognition handwritten digits (via sklearn.datasets.load_digits)",
+  "classes": [
+    0,
+    1,
+    3,
+    8
+  ],
+  "seed": 42,
+  "train_images": 537,
+  "test_images": 180,
+  "visual_words": 24,
+  "dense_sift_per_image": 16,
+  "minsup": 0.08,
+  "train_frequent_itemsets": 9132,
+  "selected_patterns": 100,
+  "support_validation": "PASS",
+  "test_results": [
+    {
+      "representation": "Visual words",
+      "n_features": 24,
+      "test_accuracy": 0.9388888888888889
+    },
+    {
+      "representation": "Visual words + frequent patterns",
+      "n_features": 124,
+      "test_accuracy": 0.9277777777777778
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "dataset": "Groceries (arules, real POS transactions)",
+  "transactions": 9835,
+  "distinct_products": 169,
+  "minsup": 0.01,
+  "minconf": 0.15,
+  "frequent_itemsets": 333,
+  "association_rules": 322,
+  "top10_rule_count": 10,
+  "support_validation": "PASS",
+  "source": "C:\\Users\\admin\\Downloads\\Frequent_Itemset_Mining_Ch1_Ch2_Ch3_Integrated\\Frequent_Itemset_Mining\\data\\application\\groceries.csv"
+}

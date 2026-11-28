@@ -4,8 +4,8 @@ Descriptors: 9 local gradient patches per image, 6 values per patch; NOT SIFT
 K-means codebook: 16 words, trained on train images only
 Algorithm: optimized; minsup: 0.12
 Frequent itemsets: 154; selected patterns: 60
-Mining elapsed_sec: 0.2862
+Mining elapsed_sec: 1.1510
 Support cross-check: PASS
-Nearest-centroid accuracy words only: 0.7961
-Nearest-centroid accuracy + FIM patterns: 0.7895
+Nearest-centroid accuracy words only: 0.7632
+Nearest-centroid accuracy + FIM patterns: 0.6842
 Accuracy improvement is not guaranteed; check actual results.

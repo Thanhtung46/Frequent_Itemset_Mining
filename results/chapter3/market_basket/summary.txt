@@ -1,8 +1,8 @@
-Source: /Users/nguyenthanhtung/Documents/Material/AI/DataMining/Frequent_Itemset_Mining/data/chapter3/groceries.csv
+Source: C:\Users\admin\Downloads\datamining\data\chapter3\groceries.csv
 Transactions: 9835; products: 169
 Algorithm: optimized; minsup: 0.01; minconf: 0.15
 Frequent itemsets: 333; association rules: 322
-Mining elapsed_sec: 0.2437
+Mining elapsed_sec: 1.0200
 Support cross-check: PASS
 Top 1: [curd] => [whole milk + yogurt]: confidence=18.9%, lift=3.37. Goi y thu nghiem ban kem; chi la tuong quan, khong chung minh quan he nhan qua.
 Top 2: [whole milk + yogurt] => [curd]: confidence=18.0%, lift=3.37. Goi y thu nghiem ban kem; chi la tuong quan, khong chung minh quan he nhan qua.
