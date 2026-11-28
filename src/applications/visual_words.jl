@@ -297,7 +297,14 @@ function digits_svg(
     labels::Vector{Int};
     limit::Int=12,
 )
-    shown = min(limit, length(images))
+    # Chon toi da 3 anh dai dien moi lop, thay vi 12 anh dau cua test set.
+    # split_digits() xep cac anh theo lop, nen lay 12 anh dau se chi co lop 0.
+    selected = Int[]
+    for digit in sort(unique(labels))
+        indices = findall(==(digit), labels)
+        append!(selected, first(indices, min(3, length(indices))))
+    end
+    shown = min(limit, length(selected))
     columns = 6
     rows = cld(shown, columns)
     width, height = 6 * 112 + 15, rows * 130 + 45
@@ -316,10 +323,11 @@ function digits_svg(
             "font-size=\"18\">UCI Digits: test images</text>",
         )
         for i in 1:shown
+            idx = selected[i]
             x0 = 10 + ((i - 1) % columns) * 112
             y0 = 36 + ((i - 1) ÷ columns) * 130
             for r in 1:8, c in 1:8
-                gray = clamp(round(Int, 255 * (1 - images[i][r, c] / 16)), 0, 255)
+                gray = clamp(round(Int, 255 * (1 - images[idx][r, c] / 16)), 0, 255)
                 rx = x0 + (c - 1) * 10
                 ry = y0 + (r - 1) * 10
                 println(
@@ -331,7 +339,7 @@ function digits_svg(
             println(
                 io,
                 "<text x=\"$x0\" y=\"$(y0 + 103)\" font-family=\"Arial\" " *
-                "font-size=\"14\">Digit: $(labels[i])</text>",
+                "font-size=\"14\">Digit: $(labels[idx])</text>",
             )
         end
         println(io, "</svg>")

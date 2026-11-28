@@ -1,0 +1,6 @@
+Julia: 1.13.4
+Operating system: NT / x86_64-w64-mingw32
+CPU: alderlake
+Logical Julia threads: 1
+Java: openjdk 25.0.5.1 2026-11-17 LTS
+Measurement: CLI end-to-end wall clock; 1 warm-up, 3 repeats, median. Includes startup, parsing and output.

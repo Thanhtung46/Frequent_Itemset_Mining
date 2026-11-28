@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1160" height="790" viewBox="0 0 1160 790">
+<rect width="100%" height="100%" fill="white"/>
+<text x="34" y="40" font-size="24" font-family="Arial" font-weight="bold">SPMF vs Julia negFIN — CLI wall-clock (median of 3)</text>
+<text x="34" y="65" font-size="13" font-family="Arial" fill="#555">Includes process startup, input parsing and output writing. Bars scaled within each dataset.</text>
+<rect x="34" y="100" width="535" height="198" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+<text x="48" y="125" font-size="17" font-family="Arial" font-weight="bold">Chess — min_sup = 80.0%</text>
+<text x="46" y="190" font-size="12" font-family="Arial">SPMF (Java)</text>
+<rect x="189" y="174" width="16" height="21" fill="#627B9D" rx="3"/>
+<text x="215" y="190" font-size="12" font-family="Arial">0.830 s</text>
+<text x="46" y="227" font-size="12" font-family="Arial">Julia Baseline</text>
+<rect x="189" y="211" width="204" height="21" fill="#C68A5B" rx="3"/>
+<text x="403" y="227" font-size="12" font-family="Arial">10.336 s</text>
+<text x="46" y="264" font-size="12" font-family="Arial">Julia Optimized</text>
+<rect x="189" y="248" width="159" height="21" fill="#498977" rx="3"/>
+<text x="358" y="264" font-size="12" font-family="Arial">8.044 s</text>
+<rect x="594" y="100" width="535" height="198" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+<text x="608" y="125" font-size="17" font-family="Arial" font-weight="bold">Mushroom — min_sup = 30.0%</text>
+<text x="606" y="190" font-size="12" font-family="Arial">SPMF (Java)</text>
+<rect x="749" y="174" width="23" height="21" fill="#627B9D" rx="3"/>
+<text x="782" y="190" font-size="12" font-family="Arial">0.769 s</text>
+<text x="606" y="227" font-size="12" font-family="Arial">Julia Baseline</text>
+<rect x="749" y="211" width="198" height="21" fill="#C68A5B" rx="3"/>
+<text x="957" y="227" font-size="12" font-family="Arial">6.679 s</text>
+<text x="606" y="264" font-size="12" font-family="Arial">Julia Optimized</text>
+<rect x="749" y="248" width="204" height="21" fill="#498977" rx="3"/>
+<text x="963" y="264" font-size="12" font-family="Arial">6.887 s</text>
+<rect x="34" y="314" width="535" height="198" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+<text x="48" y="339" font-size="17" font-family="Arial" font-weight="bold">Accidents — min_sup = 70.0%</text>
+<text x="46" y="404" font-size="12" font-family="Arial">SPMF (Java)</text>
+<rect x="189" y="388" width="67" height="21" fill="#627B9D" rx="3"/>
+<text x="266" y="404" font-size="12" font-family="Arial">3.289 s</text>
+<text x="46" y="441" font-size="12" font-family="Arial">Julia Baseline</text>
+<rect x="189" y="425" width="199" height="21" fill="#C68A5B" rx="3"/>
+<text x="398" y="441" font-size="12" font-family="Arial">9.711 s</text>
+<text x="46" y="478" font-size="12" font-family="Arial">Julia Optimized</text>
+<rect x="189" y="462" width="204" height="21" fill="#498977" rx="3"/>
+<text x="403" y="478" font-size="12" font-family="Arial">9.992 s</text>
+<rect x="594" y="314" width="535" height="198" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+<text x="608" y="339" font-size="17" font-family="Arial" font-weight="bold">Retail — min_sup = 2.0%</text>
+<text x="606" y="404" font-size="12" font-family="Arial">SPMF (Java)</text>
+<rect x="749" y="388" width="29" height="21" fill="#627B9D" rx="3"/>
+<text x="788" y="404" font-size="12" font-family="Arial">1.038 s</text>
+<text x="606" y="441" font-size="12" font-family="Arial">Julia Baseline</text>
+<rect x="749" y="425" width="204" height="21" fill="#C68A5B" rx="3"/>
+<text x="963" y="441" font-size="12" font-family="Arial">7.238 s</text>
+<text x="606" y="478" font-size="12" font-family="Arial">Julia Optimized</text>
+<rect x="749" y="462" width="204" height="21" fill="#498977" rx="3"/>
+<text x="963" y="478" font-size="12" font-family="Arial">7.237 s</text>
+<rect x="34" y="528" width="535" height="198" rx="8" fill="#FAFAFA" stroke="#DDDDDD"/>
+<text x="48" y="553" font-size="17" font-family="Arial" font-weight="bold">T10I4D100K — min_sup = 2.0%</text>
+<text x="46" y="618" font-size="12" font-family="Arial">SPMF (Java)</text>
+<rect x="189" y="602" width="52" height="21" fill="#627B9D" rx="3"/>
+<text x="251" y="618" font-size="12" font-family="Arial">2.101 s</text>
+<text x="46" y="655" font-size="12" font-family="Arial">Julia Baseline</text>
+<rect x="189" y="639" width="204" height="21" fill="#C68A5B" rx="3"/>
+<text x="403" y="655" font-size="12" font-family="Arial">8.256 s</text>
+<text x="46" y="692" font-size="12" font-family="Arial">Julia Optimized</text>
+<rect x="189" y="676" width="186" height="21" fill="#498977" rx="3"/>
+<text x="385" y="692" font-size="12" font-family="Arial">7.511 s</text>
+<text x="34" y="762" font-size="12" font-family="Arial" fill="#555">Note: CLI wall-clock measures deployment overhead, not isolated FIM kernel performance.</text>
+</svg>
