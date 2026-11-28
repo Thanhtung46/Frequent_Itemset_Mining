@@ -19,10 +19,10 @@ Toàn bộ notebook trong `notebooks/colab/` đều chạy trực tiếp bằng 
 
 | Tài nguyên | Liên kết | Ghi chú |
 | :--- | :--- | :--- |
-| **Colab — Chương 2 (6 Thực nghiệm)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1-dBP14MTu5VC3g5ecyyPokXDAO3sRoe1?usp=sharing) | Tự động tải 5 bộ benchmark từ Hugging Face, chạy benchmark & vẽ 6 biểu đồ |
-| **Colab — Chương 3 (Ứng dụng 1: Market Basket)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11A0g25vqiupDo2DAzdnVjGf4Z3aqIXFG?usp=sharing) | Phân tích giỏ hàng `Groceries` + Top-10 luật theo `Lift` + biểu đồ SVG |
+| **Colab — Chương 2 (6 Thực nghiệm)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/01_ch2_experiments.ipynb) | Tự động tải 5 bộ benchmark từ Hugging Face, chạy benchmark & vẽ 6 biểu đồ |
+| **Colab — Chương 3 (Ứng dụng 1: Market Basket)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/02_ch3_app1_market_basket.ipynb) | Phân tích giỏ hàng `Groceries` + Top-10 luật theo `Lift` + biểu đồ SVG |
 | **Colab — Chương 3 (Ứng dụng 2: Visual Words)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/03_ch3_app2_visual_words.ipynb) | Bag of Visual Words trên `UCI Digits 8×8` + đánh giá *Nearest-Centroid* |
-| **Colab — Chương 3 (Demo gộp cả 2 ứng dụng)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Ci1hyDFa5AJnIjzlHDYl0wQaxaKnRkv9?usp=sharing) | Chạy kiểm thử + đầy đủ 2 ứng dụng Chương 3 trong 1 notebook duy nhất |
+| **Colab — Chương 3 (Demo gộp cả 2 ứng dụng)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/04_ch3_all_applications.ipynb) | Chạy kiểm thử + đầy đủ 2 ứng dụng Chương 3 trong 1 notebook duy nhất |
 | **Bộ dữ liệu Benchmark & Chương 3 (Hugging Face)** | https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining | 5 bộ Ch.2 (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`) + 2 bộ Ch.3 (`groceries.csv`, `digits8x8.csv`) |
 | **Bài báo gốc (`negFIN`)** | [DOI: 10.1016/j.eswa.2018.03.041](https://www.philippe-fournier-viger.com/spmf/NEGFINarticle.pdf) | Aryabarzan et al. (2018), *negFIN: An efficient algorithm for fast mining frequent itemsets* |
 | **Thư viện đối chiếu (`SPMF`)** | https://www.philippe-fournier-viger.com/spmf/ | Dùng `spmf.jar` (`NegFIN`) làm Ground Truth kiểm chứng 100% |
@@ -148,7 +148,7 @@ julia --project=. src/main.jl \
     --stats
 ```
 
-### Bước 4: Chạy 6 thực nghiệm & vẽ 5 biểu đồ (Chương 2)
+### Bước 4: Chạy 6 thực nghiệm & vẽ 6 biểu đồ (Chương 2)
 - **Google Colab:** Mở [notebooks/colab/01_ch2_experiments.ipynb](notebooks/colab/01_ch2_experiments.ipynb) $\rightarrow$ chọn **Julia Runtime** $\rightarrow$ **Run all**.
 - **Local Notebook:** Mở [notebooks/local/01_ch2_experiments.ipynb](notebooks/local/01_ch2_experiments.ipynb) bằng **Julia Kernel** $\rightarrow$ **Run All**.
 - **Local CLI** *(sau khi đã có 5 file trong `data/benchmark/`)*:
