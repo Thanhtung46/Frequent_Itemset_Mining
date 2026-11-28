@@ -15,7 +15,8 @@
 \usepackage{booktabs}
 \usepackage{array}
 \usepackage{multirow}
-\usepackage{xcolor}
+\usepackage[table]{xcolor}
+\usepackage{stfloats}
 \usepackage[section]{placeins}
 \usepackage{hyperref}
 
@@ -26,6 +27,7 @@
 \renewcommand{\floatpagefraction}{0.75}
 \setcounter{topnumber}{4}
 \setcounter{totalnumber}{6}
+\raggedbottom
 
 \hypersetup{
     colorlinks=true,
@@ -232,7 +234,7 @@ Toàn bộ mã nguồn Chương 1 được tổ chức chuẩn hóa trong thư m
     \item \texttt{src/utils.jl} và \texttt{src/main.jl}: \textbf{Bậc 4 (I/O \& CLI)} -- đọc file \texttt{.txt} chuẩn SPMF (tự bỏ qua dòng trống/metadata và khử item trùng trong cùng giao dịch), xuất đúng định dạng \texttt{item1 item2 \#SUP: count}, hỗ trợ tham số dòng lệnh \texttt{--input}, \texttt{--output}, \texttt{--minsup}, \texttt{--algo baseline|optimized} và \texttt{--stats}.
 \end{itemize}
 
-\begin{algorithm}[tb]
+\begin{algorithm}[H]
 \caption{Khung thuật toán negFIN (phiên bản tối ưu)}
 \label{alg:negfin}
 \begin{algorithmic}[1]
@@ -300,9 +302,9 @@ Toàn bộ hệ thống kiểm thử đạt kết quả \textbf{66/66 PASS (100\
 \textbf{Tập kiểm thử (Kiểu $B$)} & \textbf{Base} & \textbf{Opt} & \textbf{Tăng} & \textbf{Base} & \textbf{Opt} & \textbf{Giảm} \\
  & \textbf{(ms)} & \textbf{(ms)} & \textbf{tốc} & \textbf{(MB)} & \textbf{(MB)} & \textbf{Heap} \\
 \midrule
-Dense-64 (\texttt{UInt64}) & 15.96 & 3.06 & \textbf{5.21$\times$} & 33.61 & 11.35 & -66.2\% \\
-Dense-120 (\texttt{UInt128}) & 25.33 & 4.84 & \textbf{5.23$\times$} & 86.00 & 24.89 & -71.1\% \\
-Sparse-400 (\texttt{Vec\{UInt64\}}) & 3.63 & 2.27 & \textbf{1.60$\times$} & 13.33 & 3.39 & -74.6\% \\
+Dense-64 (UInt64) & 15.96 & 3.06 & \textbf{5.21$\times$} & 33.61 & 11.35 & -66.2\% \\
+Dense-120 (UInt128) & 25.33 & 4.84 & \textbf{5.23$\times$} & 86.00 & 24.89 & -71.1\% \\
+Sparse-400 (Vector\{UInt64\}) & 3.63 & 2.27 & \textbf{1.60$\times$} & 13.33 & 3.39 & -74.6\% \\
 \bottomrule
 \end{tabular}%
 }
@@ -344,7 +346,7 @@ T10I4D100K & Sparse & 100,000 & 949 & 10.10 & 3.8 MB \\
 \subsection{Thực nghiệm 1: Kiểm tra Tính Đúng Đắn (\textit{Correctness})}
 Bảng~\ref{tab:exp1} tổng hợp kết quả kiểm chứng trên cả 5 bộ dữ liệu chuẩn. Toàn bộ số lượng tập phổ biến và giá trị support từng tập giữa \texttt{negfin\_baseline} và \texttt{negfin\_optimized} đều \textbf{khớp tuyệt đối 100\%} (không có tập trùng lặp hay sai lệch).
 
-\begin{table}[htbp]
+\begin{table}[H]
 \caption{Kết quả Thực nghiệm 1: Kiểm tra tính đúng đắn trên 5 bộ Benchmark}
 \label{tab:exp1}
 \centering
@@ -364,70 +366,80 @@ T10I4D100K & 0.02 & 100,000 & 155 & 155 & \textbf{MATCH 100\%} \\
 \end{table}
 
 \subsection{Thực nghiệm 2: Thời gian Chạy theo $\text{min\_sup}$}
-Hình~\ref{fig:runtime} và Bảng~\ref{tab:exp2_full} thể hiện thời gian chạy trên 6 mốc $\text{min\_sup}$ giảm dần cho từng bộ dữ liệu. Bản tối ưu luôn nhanh hơn bản cơ bản trên toàn bộ 30 điểm đo:
+Hình~\ref{fig:runtime_dense}, \ref{fig:runtime_sparse} và Bảng~\ref{tab:exp2_full} thể hiện thời gian chạy trên 6 mốc $\text{min\_sup}$ giảm dần cho từng bộ dữ liệu. Bản tối ưu luôn nhanh hơn bản cơ bản trên toàn bộ 30 điểm đo:
 \begin{itemize}
     \item Trên T10I4D100K, \texttt{negfin\_optimized} đạt tốc độ vượt trội nhất: tăng tốc \textbf{3.00$\times$} ở $\text{min\_sup}=2\%$ (0.413s $\rightarrow$ 0.138s) và \textbf{3.26$\times$} ở $\text{min\_sup}=1.5\%$ (0.765s $\rightarrow$ 0.235s), nhờ cơ chế \textit{Early-Abort} loại bỏ sớm các ứng viên không phổ biến trên cây tìm kiếm rộng.
     \item Trên Chess và Mushroom, nhờ $n_f \le 128$ khớp hoàn toàn vào kiểu \texttt{UInt128} cấp phát trên stack, bản tối ưu xử lý 111,239 tập phổ biến (Chess 65\%) chỉ trong \textbf{9.8 ms} (tăng tốc 1.51$\times$--1.72$\times$) và 99,071 tập phổ biến (Mushroom 15\%) trong \textbf{8.3 ms} (tăng tốc 1.56$\times$).
     \item Trên tập lớn Accidents (340,183 giao dịch), bản tối ưu chỉ mất \textbf{0.303s--0.413s} cho cả 6 mốc $\text{min\_sup}$.
 \end{itemize}
 
-\begin{figure*}[t]
+\begin{figure}[H]
 \centering
-\includegraphics[width=0.96\textwidth]{figures/fig1_runtime_vs_minsup.png}
-\caption{Thực nghiệm 2: So sánh thời gian chạy theo ngưỡng $\text{min\_sup}$ giữa negFIN Baseline và negFIN Optimized trên 5 bộ dữ liệu benchmark (trục hoành giảm dần từ trái sang phải).}
-\label{fig:runtime}
-\end{figure*}
+\includegraphics[width=\columnwidth]{figures/fig1a_runtime_dense.png}
+\caption{Thực nghiệm 2 (nhóm Dày đặc): So sánh thời gian chạy theo ngưỡng $\text{min\_sup}$ trên Chess, Mushroom và Accidents.}
+\label{fig:runtime_dense}
+\end{figure}
 
-\begin{table*}[htbp]
+\begin{figure}[H]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig1b_runtime_sparse.png}
+\caption{Thực nghiệm 2 (nhóm Thưa): So sánh thời gian chạy theo ngưỡng $\text{min\_sup}$ trên Retail và T10I4D100K.}
+\label{fig:runtime_sparse}
+\end{figure}
+
+\begin{table*}[t]
 \caption{Kết quả chi tiết Thực nghiệm 2 \& 3: Thời gian chạy (trung vị 3 lần), số tập phổ biến và bộ nhớ cấp phát trên cả 5 bộ Benchmark}
 \label{tab:exp2_full}
 \centering
-\setlength{\tabcolsep}{5pt}
-\begin{tabular}{@{}lcrrrrrrr@{}}
+\scriptsize
+\renewcommand{\arraystretch}{0.96}
+\setlength{\aboverulesep}{0pt}
+\setlength{\belowrulesep}{0pt}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}lrrrrrrrr@{}}
 \toprule
-\textbf{Tập dữ liệu} & \textbf{min\_sup} & \textbf{\#Itemsets} & \textbf{Base (s)} & \textbf{Opt (s)} & \textbf{Speedup} & \textbf{Alloc B (MB)} & \textbf{Alloc O (MB)} & \textbf{Giảm Heap} \\
+& & & \multicolumn{3}{c}{\textbf{Thời gian chạy (s)}} & \multicolumn{3}{c}{\textbf{Bộ nhớ Heap (MB)}} \\
+\cmidrule(lr){4-6} \cmidrule(lr){7-9}
+\textbf{Tập dữ liệu} & \textbf{min\_sup} & \textbf{\#Itemsets} & \textbf{Base} & \textbf{Opt} & \textbf{Speedup} & \textbf{Base} & \textbf{Opt} & \textbf{Giảm} \\
 \midrule
-\multirow{6}{*}{Chess (Dense)}
- & 90.0\% & 622 & 0.0026 & 0.0024 & 1.10$\times$ & 0.47 & 0.27 & -41.4\% \\
- & 85.0\% & 2,669 & 0.0033 & 0.0029 & 1.14$\times$ & 1.78 & 1.10 & -38.2\% \\
- & 80.0\% & 8,227 & 0.0056 & 0.0038 & 1.48$\times$ & 4.85 & 3.04 & -37.3\% \\
- & 75.0\% & 20,993 & 0.0069 & 0.0040 & \textbf{1.72$\times$} & 11.75 & 7.42 & -36.9\% \\
- & 70.0\% & 48,731 & 0.0104 & 0.0069 & 1.51$\times$ & 25.26 & 16.62 & -34.2\% \\
- & 65.0\% & 111,239 & 0.0149 & 0.0098 & 1.51$\times$ & 55.46 & 36.83 & -33.6\% \\
+\multirow{6}{*}{\textbf{Chess} (\textit{Dense})}
+ & 90.0\% & 622 & 0.0026 & 0.0024 & 1.10$\times$ & 0.47 & 0.27 & $-$41.4\% \\
+ & 85.0\% & 2,669 & 0.0033 & 0.0029 & 1.14$\times$ & 1.78 & 1.10 & $-$38.2\% \\
+ & 80.0\% & 8,227 & 0.0056 & 0.0038 & 1.48$\times$ & 4.85 & 3.04 & $-$37.3\% \\
+ & 75.0\% & 20,993 & 0.0069 & 0.0040 & \textbf{1.72$\times$} & 11.75 & 7.42 & $-$36.9\% \\
+ & 70.0\% & 48,731 & 0.0104 & 0.0069 & 1.51$\times$ & 25.26 & 16.62 & $-$34.2\% \\
+ & 65.0\% & 111,239 & 0.0149 & 0.0098 & 1.51$\times$ & 55.46 & 36.83 & $-$33.6\% \\
 \midrule
-\multirow{6}{*}{Mushroom (Dense)}
- & 40.0\% & 505 & 0.0048 & 0.0039 & 1.24$\times$ & 0.45 & 0.20 & -55.4\% \\
- & 35.0\% & 1,121 & 0.0052 & 0.0038 & 1.36$\times$ & 1.13 & 0.45 & -60.3\% \\
- & 30.0\% & 2,587 & 0.0053 & 0.0040 & 1.33$\times$ & 1.93 & 0.88 & -54.5\% \\
- & 25.0\% & 5,393 & 0.0063 & 0.0044 & 1.44$\times$ & 4.70 & 1.88 & -60.0\% \\
- & 20.0\% & 53,337 & 0.0097 & 0.0064 & 1.51$\times$ & 18.15 & 10.11 & -44.3\% \\
- & 15.0\% & 99,071 & 0.0130 & 0.0083 & \textbf{1.56$\times$} & 37.03 & 20.71 & -44.1\% \\
+\rowcolor{gray!7} & 40.0\% & 505 & 0.0048 & 0.0039 & 1.24$\times$ & 0.45 & 0.20 & $-$55.4\% \\
+\rowcolor{gray!7} & 35.0\% & 1,121 & 0.0052 & 0.0038 & 1.36$\times$ & 1.13 & 0.45 & $-$60.3\% \\
+\rowcolor{gray!7} & 30.0\% & 2,587 & 0.0053 & 0.0040 & 1.33$\times$ & 1.93 & 0.88 & $-$54.5\% \\
+\rowcolor{gray!7} & 25.0\% & 5,393 & 0.0063 & 0.0044 & 1.44$\times$ & 4.70 & 1.88 & $-$60.0\% \\
+\rowcolor{gray!7} & 20.0\% & 53,337 & 0.0097 & 0.0064 & 1.51$\times$ & 18.15 & 10.11 & $-$44.3\% \\
+\rowcolor{gray!7} \multirow{-6}{*}{\textbf{Mushroom} (\textit{Dense})} & 15.0\% & 99,071 & 0.0130 & 0.0083 & \textbf{1.56$\times$} & 37.03 & 20.71 & $-$44.1\% \\
 \midrule
-\multirow{6}{*}{Accidents (Dense)}
- & 75.0\% & 313 & 0.3417 & 0.3033 & 1.13$\times$ & 1.45 & 0.53 & -63.3\% \\
- & 70.0\% & 529 & 0.3585 & 0.3044 & \textbf{1.18$\times$} & 2.97 & 1.00 & -66.2\% \\
- & 65.0\% & 1,093 & 0.3735 & 0.3202 & 1.17$\times$ & 7.78 & 2.72 & -65.0\% \\
- & 60.0\% & 2,074 & 0.4101 & 0.3800 & 1.08$\times$ & 25.61 & 7.80 & -69.5\% \\
- & 55.0\% & 4,051 & 0.4241 & 0.3774 & 1.12$\times$ & 47.59 & 15.85 & -66.7\% \\
- & 50.0\% & 8,057 & 0.4831 & 0.4135 & 1.17$\times$ & 103.33 & 35.04 & -66.1\% \\
+\multirow{6}{*}{\textbf{Accidents} (\textit{Dense})}
+ & 75.0\% & 313 & 0.3417 & 0.3033 & 1.13$\times$ & 1.45 & 0.53 & $-$63.3\% \\
+ & 70.0\% & 529 & 0.3585 & 0.3044 & \textbf{1.18$\times$} & 2.97 & 1.00 & $-$66.2\% \\
+ & 65.0\% & 1,093 & 0.3735 & 0.3202 & 1.17$\times$ & 7.78 & 2.72 & $-$65.0\% \\
+ & 60.0\% & 2,074 & 0.4101 & 0.3800 & 1.08$\times$ & 25.61 & 7.80 & $-$69.5\% \\
+ & 55.0\% & 4,051 & 0.4241 & 0.3774 & 1.12$\times$ & 47.59 & 15.85 & $-$66.7\% \\
+ & 50.0\% & 8,057 & 0.4831 & 0.4135 & 1.17$\times$ & 103.33 & 35.04 & $-$66.1\% \\
 \midrule
-\multirow{6}{*}{Retail (Sparse)}
- & 5.0\% & 16 & 0.0462 & 0.0343 & 1.35$\times$ & 1.45 & 1.10 & -24.1\% \\
- & 3.0\% & 32 & 0.0475 & 0.0362 & 1.31$\times$ & 1.81 & 1.20 & -33.4\% \\
- & 2.0\% & 55 & 0.0522 & 0.0423 & 1.23$\times$ & 4.14 & 1.72 & -58.6\% \\
- & 1.0\% & 159 & 0.0647 & 0.0582 & 1.11$\times$ & 45.90 & 22.95 & -50.0\% \\
- & 0.5\% & 580 & 0.1812 & 0.1581 & 1.15$\times$ & 409.53 & 366.78 & -10.4\% \\
- & 0.3\% & 1,393 & 0.5690 & 0.4033 & \textbf{1.41$\times$} & 2125.28 & 506.08 & \textbf{-76.2\%} \\
+\rowcolor{gray!7} & 5.0\% & 16 & 0.0462 & 0.0343 & 1.35$\times$ & 1.45 & 1.10 & $-$24.1\% \\
+\rowcolor{gray!7} & 3.0\% & 32 & 0.0475 & 0.0362 & 1.31$\times$ & 1.81 & 1.20 & $-$33.4\% \\
+\rowcolor{gray!7} & 2.0\% & 55 & 0.0522 & 0.0423 & 1.23$\times$ & 4.14 & 1.72 & $-$58.6\% \\
+\rowcolor{gray!7} & 1.0\% & 159 & 0.0647 & 0.0582 & 1.11$\times$ & 45.90 & 22.95 & $-$50.0\% \\
+\rowcolor{gray!7} & 0.5\% & 580 & 0.1812 & 0.1581 & 1.15$\times$ & 409.53 & 366.78 & $-$10.4\% \\
+\rowcolor{gray!7} \multirow{-6}{*}{\textbf{Retail} (\textit{Sparse})} & 0.3\% & 1,393 & 0.5690 & 0.4033 & \textbf{1.41$\times$} & 2125.28 & 506.08 & \textbf{$-$76.2\%} \\
 \midrule
-\multirow{6}{*}{T10I4D100K (Sparse)}
- & 4.0\% & 26 & 0.0399 & 0.0358 & 1.12$\times$ & 5.48 & 1.26 & -77.0\% \\
- & 3.0\% & 60 & 0.0653 & 0.0547 & 1.19$\times$ & 81.39 & 15.45 & -81.0\% \\
- & 2.0\% & 155 & 0.4125 & 0.1377 & 3.00$\times$ & 924.84 & 312.45 & -66.2\% \\
- & 1.5\% & 237 & 0.7651 & 0.2346 & \textbf{3.26$\times$} & 1719.26 & 1246.12 & -27.5\% \\
- & 1.0\% & 385 & 1.0615 & 0.5646 & 1.88$\times$ & 3751.47 & 1131.74 & -69.8\% \\
- & 0.7\% & 603 & 1.5323 & 0.8380 & 1.83$\times$ & 5486.69 & 1893.93 & -65.5\% \\
+\multirow{6}{*}{\textbf{T10I4D100K} (\textit{Sparse})}
+ & 4.0\% & 26 & 0.0399 & 0.0358 & 1.12$\times$ & 5.48 & 1.26 & $-$77.0\% \\
+ & 3.0\% & 60 & 0.0653 & 0.0547 & 1.19$\times$ & 81.39 & 15.45 & $-$81.0\% \\
+ & 2.0\% & 155 & 0.4125 & 0.1377 & 3.00$\times$ & 924.84 & 312.45 & $-$66.2\% \\
+ & 1.5\% & 237 & 0.7651 & 0.2346 & \textbf{3.26$\times$} & 1719.26 & 1246.12 & $-$27.5\% \\
+ & 1.0\% & 385 & 1.0615 & 0.5646 & 1.88$\times$ & 3751.47 & 1131.74 & $-$69.8\% \\
+ & 0.7\% & 603 & 1.5323 & 0.8380 & 1.83$\times$ & 5486.69 & 1893.93 & $-$65.5\% \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table*}
 
 \subsection{Thực nghiệm 3: Số lượng Tập Phổ Biến (\textit{Output Size})}
@@ -440,10 +452,11 @@ Hình~\ref{fig:output_size} so sánh quy mô đầu ra trên thang logarit giữ
 \label{fig:output_size}
 \end{figure}
 
+\FloatBarrier
 \subsection{Thực nghiệm 4: Mức sử dụng Bộ nhớ (\textit{Memory Consumption})}
 Bảng~\ref{tab:exp4} và Hình~\ref{fig:memory} trình bày kết quả đo bộ nhớ ở mốc $\text{min\_sup}$ trung bình cho từng tập dữ liệu. Bản \texttt{negfin\_optimized} giúp giảm tổng Heap cấp phát từ \textbf{27.52\% đến 69.55\%} trên cả 5 bộ dữ liệu (Accidents giảm 69.55\%, Mushroom giảm 60.00\%, Retail giảm 50.01\%). Đặc biệt, trên T10I4D100K, bộ nhớ vật lý đỉnh (\textit{Peak RSS}) giảm mạnh từ \textbf{449.08 MB xuống 372.50 MB} (tiết kiệm 76.58 MB RAM thực) nhờ biểu diễn cây LCRS giảm cấp phát cho nút lá và bố cục SoA gọn nhẹ hơn đáng kể so với mảng đối tượng \texttt{BitVector}.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \caption{Kết quả Thực nghiệm 4: So sánh Heap Allocation và Peak RSS giữa Baseline và Optimized}
 \label{tab:exp4}
 \centering
@@ -463,7 +476,7 @@ T10I4D100K & 0.015 & 1719.26 & 1246.12 & -27.52 & 449.08 & \textbf{372.50} \\
 }
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig3_memory_comparison.png}
 \caption{Thực nghiệm 4: So sánh tổng Heap cấp phát (trái) và RAM đỉnh Peak RSS (phải) giữa Baseline và Optimized.}
@@ -473,7 +486,7 @@ T10I4D100K & 0.015 & 1719.26 & 1246.12 & -27.52 & 449.08 & \textbf{372.50} \\
 \subsection{Thực nghiệm 5: Khả năng Mở rộng (\textit{Scalability})}
 Bảng~\ref{tab:exp5} và Hình~\ref{fig:scalability} đánh giá khả năng mở rộng khi tăng kích thước CSDL theo các lát cắt $10\%, 25\%, 50\%, 75\%, 100\%$ trên Retail ($\text{min\_sup}=0.5\%$) và Accidents ($\text{min\_sup}=55\%$). Khi số lượng giao dịch tăng 10 lần, thời gian chạy bản tối ưu tăng \textbf{10.39$\times$} trên Retail (0.0146s $\rightarrow$ 0.1511s) và \textbf{10.60$\times$} trên Accidents (0.0352s $\rightarrow$ 0.3734s). Độ tăng trưởng gần như \textbf{tuyến tính $O(|DB|)$} xác nhận tính ổn định cao của cấu trúc BMC-tree và NegNodeset khi quy mô giao dịch tăng mạnh trong khi phân bố item giữ tương đối ổn định.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \caption{Kết quả Thực nghiệm 5: Khả năng mở rộng (10\% $\rightarrow$ 100\%) trên Retail và Accidents}
 \label{tab:exp5}
 \centering
@@ -499,7 +512,7 @@ Bảng~\ref{tab:exp5} và Hình~\ref{fig:scalability} đánh giá khả năng m�
 \end{tabular}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig4_scalability.png}
 \caption{Thực nghiệm 5: Thời gian chạy theo tỷ lệ kích thước CSDL trên Retail (trái) và Accidents (phải).}
@@ -513,7 +526,7 @@ Bảng~\ref{tab:exp5} và Hình~\ref{fig:scalability} đánh giá khả năng m�
     \item Chính ở kịch bản giao dịch dài ($\text{avg\_len}$ $= 30$), bản tối ưu thể hiện ưu thế áp đảo: chỉ mất \textbf{0.0436s} so với \textbf{0.2128s} của bản cơ bản (\textbf{tăng tốc 4.88$\times$}), vì toàn bộ $n_f = 80$ bit được nén gọn trong một giá trị \texttt{UInt128} không cấp phát heap.
 \end{itemize}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \caption{Kết quả Thực nghiệm 6: Ảnh hưởng của độ dài giao dịch trung bình ($10{,}000$ tx, 80 items, $\text{min\_sup}=20\%$)}
 \label{tab:exp6}
 \centering
@@ -533,7 +546,7 @@ Bảng~\ref{tab:exp5} và Hình~\ref{fig:scalability} đánh giá khả năng m�
 }
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figures/fig5_tx_length.png}
 \caption{Thực nghiệm 6: Ảnh hưởng độ dài giao dịch trung bình đến thời gian chạy (trái) và sự phình to của cây BMC-tree cùng số tập phổ biến (phải).}
@@ -552,11 +565,11 @@ Từ các phân tích thực nghiệm trên, chúng tôi đề xuất \textbf{3 
 
 \FloatBarrier
 % ==============================================================================
-\section{Chương 3: Ứng Dụng Thực Tế Với Mã Nguồn negFIN Thuần Julia}
+\section{Chương 3: Ứng Dụng Thuật Toán negFIN Vào Bài Toán Thực Tế}
 % ==============================================================================
 
-\subsection{Kiến trúc Tích hợp Thuần Julia}
-Nguyên tắc cốt lõi của Chương 3 là \textbf{toàn bộ tập phổ biến ở cả hai ứng dụng đều được khai thác trực tiếp bằng hàm \texttt{negfin\_optimized} (và đối chiếu được với \texttt{negfin\_baseline}) tự viết của nhóm} trong \texttt{src/algorithm/}, tuyệt đối không sử dụng thư viện FIM ngoài hay mã ứng dụng Python. Module \texttt{src/applications/applications.jl} nạp trực tiếp mã nguồn Chương 1 và cung cấp hai ứng dụng độc lập cùng bộ kiểm thử tự động \texttt{tests/test\_ch3\_julia.jl} (\textbf{27/27 PASS}). Mọi kết quả đều trải qua bước kiểm chứng chéo \texttt{validate\_support} đếm trực tiếp trên giao dịch gốc (Support cross-check: PASS). Hai tệp dữ liệu nguyên bản (\texttt{groceries.csv} từ gói R \href{https://michael.hahsler.net/arules/reference/Groceries.html}{arules}~\cite{b10} và \texttt{digits8x8.csv} từ \href{https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits}{UCI ML Repository}~\cite{b13}) cũng được lưu trữ dưới dạng bản sao lưu công khai (\textit{public mirror}) tại \href{https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining}{kho Hugging Face} của nhóm để tự động tải khi chạy trên Google Colab.
+\subsection{Quy trình Áp dụng Thuật toán vào Bài toán Thực tế}
+Để chứng minh khả năng ứng dụng thực tiễn của thuật toán negFIN đã xây dựng ở Chương 1, cả hai bài toán trong Chương 3 đều được thiết kế theo một khung xử lý thống nhất: \textit{tiền xử lý dữ liệu đặc thù theo miền $\rightarrow$ ánh xạ thành cơ sở dữ liệu giao dịch $\rightarrow$ khai thác tập phổ biến trực tiếp bằng hàm \texttt{negfin\_optimized} (có thể đối chiếu với \texttt{negfin\_baseline}) $\rightarrow$ hậu xử lý trích xuất tri thức phục vụ bài toán đích}, không phụ thuộc thư viện FIM bên ngoài. Toàn bộ quy trình được đóng gói trong \texttt{src/applications/applications.jl}, kiểm chứng tự động qua bộ kiểm thử \texttt{tests/test\_ch3\_julia.jl} (\textbf{27/27 PASS}) và đối chiếu lại độ hỗ trợ trên giao dịch gốc bằng \texttt{validate\_support} (Support cross-check: PASS). Hai tập dữ liệu nguyên bản (\texttt{groceries.csv} từ gói R \href{https://michael.hahsler.net/arules/reference/Groceries.html}{arules}~\cite{b10} và \texttt{digits8x8.csv} từ \href{https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits}{UCI ML Repository}~\cite{b13}) được lưu trữ dưới dạng bản sao lưu công khai (\textit{public mirror}) tại \href{https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining}{kho Hugging Face} của nhóm để đảm bảo khả năng tái lập trên Google Colab.
 
 \subsection{Ứng dụng 1: Phân tích Giỏ hàng (\textit{Market Basket Analysis})}
 
@@ -577,11 +590,11 @@ Chúng tôi sử dụng tập dữ liệu bán lẻ thực tế \textbf{Grocerie
 \subsubsection{Kết quả Top-10 Luật theo Lift và Diễn giải Kinh doanh}
 Bảng~\ref{tab:top10_lift} và Hình~\ref{fig:ch3_lift} trình bày đầy đủ Top-10 luật kết hợp có chỉ số Lift cao nhất.
 
-\begin{table*}[t]
+\begin{table*}[b]
 \caption{Ứng dụng 1: Top-10 luật kết hợp theo chỉ số Lift trên tập dữ liệu Groceries (9,835 giao dịch, $\text{min\_sup}=0.01$, $\text{min\_conf}=0.15$)}
 \label{tab:top10_lift}
 \centering
-\begin{tabular}{@{}cllrrrrr@{}}
+\begin{tabular*}{\textwidth}{@{\extracolsep{\fill}}cllrrrrr@{}}
 \toprule
 \textbf{Hạng} & \textbf{Vế trái (Antecedent $X$)} & \textbf{Vế phải (Consequent $Y$)} & \textbf{Count} & \textbf{Support} & \textbf{Confidence} & \textbf{Lift} & \textbf{Leverage} \\
 \midrule
@@ -596,10 +609,10 @@ Bảng~\ref{tab:top10_lift} và Hình~\ref{fig:ch3_lift} trình bày đầy đ�
 9 & root vegetables + tropical fruit & other vegetables & 121 & 0.0123 & \textbf{58.45\%} & \textbf{3.02} & 0.0082 \\
 10 & other vegetables + whole milk & root vegetables & 228 & 0.0232 & 30.98\% & \textbf{2.84} & \textbf{0.0150} \\
 \bottomrule
-\end{tabular}
+\end{tabular*}
 \end{table*}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figures/ch3_top10_lift.png}
 \caption{Ứng dụng 1: Biểu đồ Top-10 luật kết hợp theo chỉ số Lift trên bộ dữ liệu Groceries.}
@@ -608,24 +621,24 @@ Bảng~\ref{tab:top10_lift} và Hình~\ref{fig:ch3_lift} trình bày đầy đ�
 
 Từ kết quả thực nghiệm, ta rút ra 3 cụm hành vi mua sắm nổi bật có giá trị ứng dụng kinh doanh rõ rệt:
 \begin{itemize}
-    \item \textbf{Cụm chế phẩm từ sữa (Hạng 1, 2, 4):} Luật \texttt{\{curd\} $\Rightarrow$ \{whole milk, yogurt\}} đạt $\text{Lift} = 3.37$, cho thấy khách hàng mua sữa đông có xác suất mua kèm combo sữa tươi và sữa chua cao gấp 3.37 lần mức ngẫu nhiên. Tương tự, \texttt{\{other vegetables, yogurt\} $\Rightarrow$ \{whipped/sour cream\}} đạt $\text{Lift} = 3.27$. \textit{Gợi ý kinh doanh:} Bố trí liền kề quầy tủ mát sữa đông, sữa chua, kem chua và thiết kế gói ưu đãi bữa sáng.
-    \item \textbf{Cụm rau củ quả tươi (Hạng 3, 5, 8, 9, 10):} Luật \texttt{\{citrus fruit, root vegetables\} $\Rightarrow$ \{other vegetables\}} và \texttt{\{root vegetables, tropical fruit\} $\Rightarrow$ \{other vegetables\}} có độ tin cậy rất cao (\textbf{58.62\%} và \textbf{58.45\%}) với $\text{Lift} > 3.0$; đặc biệt luật hạng 10 (\texttt{\{other vegetables, whole milk\} $\Rightarrow$ \{root vegetables\}}) đạt độ phủ lớn nhất trong top-10 (228 hóa đơn, $\text{Leverage} = 0.0150$). \textit{Gợi ý:} Sắp xếp khu trái cây họ cam/nhiệt đới dẫn trực tiếp sang khu rau củ để tối ưu hóa hành trình mua thực phẩm tươi sống hàng ngày.
-    \item \textbf{Cụm nguyên liệu nấu ăn (Hạng 6, 7):} Luật \texttt{\{beef\} $\Rightarrow$ \{root vegetables\}} (171 hóa đơn, $\text{Confidence} = 33.14\%$, $\text{Lift} = 3.04$) phản ánh thói quen mua thịt bò kèm rau củ hầm/nấu súp. \textit{Gợi ý:} Triển khai trưng bày chéo (\textit{cross-merchandising}) đặt khay củ quả sơ chế cạnh quầy thịt bò.
+    \item \textbf{Cụm chế phẩm từ sữa (Hạng 1, 2, 4):} Luật \{\textit{curd}\} $\Rightarrow$ \{\textit{whole milk, yogurt}\} đạt $\text{Lift} = 3.37$, cho thấy khách hàng mua sữa đông có xác suất mua kèm combo sữa tươi và sữa chua cao gấp 3.37 lần mức ngẫu nhiên. Tương tự, \{\textit{other vegetables, yogurt}\} $\Rightarrow$ \{\textit{whipped/sour cream}\} đạt $\text{Lift} = 3.27$. \textit{Gợi ý kinh doanh:} Bố trí liền kề quầy tủ mát sữa đông, sữa chua, kem chua và thiết kế gói ưu đãi bữa sáng.
+    \item \textbf{Cụm rau củ quả tươi (Hạng 3, 5, 8, 9, 10):} Luật \{\textit{citrus fruit, root vegetables}\} $\Rightarrow$ \{\textit{other vegetables}\} và \{\textit{root vegetables, tropical fruit}\} $\Rightarrow$ \{\textit{other vegetables}\} có độ tin cậy rất cao (\textbf{58.62\%} và \textbf{58.45\%}) với $\text{Lift} > 3.0$; đặc biệt luật hạng 10 (\{\textit{other vegetables, whole milk}\} $\Rightarrow$ \{\textit{root vegetables}\}) đạt độ phủ lớn nhất trong top-10 (228 hóa đơn, $\text{Leverage} = 0.0150$). \textit{Gợi ý:} Sắp xếp khu trái cây họ cam/nhiệt đới dẫn trực tiếp sang khu rau củ để tối ưu hóa hành trình mua thực phẩm tươi sống hàng ngày.
+    \item \textbf{Cụm nguyên liệu nấu ăn (Hạng 6, 7):} Luật \{\textit{beef}\} $\Rightarrow$ \{\textit{root vegetables}\} (171 hóa đơn, $\text{Confidence} = 33.14\%$, $\text{Lift} = 3.04$) phản ánh thói quen mua thịt bò kèm rau củ hầm/nấu súp. \textit{Gợi ý:} Triển khai trưng bày chéo (\textit{cross-merchandising}) đặt khay củ quả sơ chế cạnh quầy thịt bò.
 \end{itemize}
 \textit{Lưu ý khoa học:} Chỉ số $\text{Lift} > 1$ chỉ phản ánh \textbf{mối tương quan thống kê dương} trên dữ liệu lịch sử, không tự động chứng minh quan hệ nhân quả hay đảm bảo tăng lợi nhuận; mọi đề xuất trưng bày hoặc khuyến mãi cần được kiểm chứng thực tế bằng thử nghiệm A/B.
 
 \subsection{Ứng dụng 2: Khai thác Mẫu Trực quan trên Hình ảnh (\textit{Bag of Visual Words})}
 
 \subsubsection{Dữ liệu và Quy trình Chuyển đổi Ảnh thành Giao dịch}
-Lấy cảm hứng từ mô hình \textit{Bag of Visual Words} (BoVW) của Sivic \& Zisserman~\cite{b11}, ứng dụng thứ hai (\texttt{src/applications/visual\_words.jl}) áp dụng negFIN trên tập ảnh chữ số viết tay \textbf{UCI Optical Recognition of Handwritten Digits (8$\times$8)} (4 lớp chữ số 0, 1, 3, 8, tối đa 150 ảnh/lớp, tổng cộng 600 ảnh -- Hình~\ref{fig:ch3_digits}). Quy trình hoàn toàn thuần Julia và tránh rò rỉ dữ liệu (\textit{data leakage}):
+Lấy cảm hứng từ mô hình \textit{Bag of Visual Words} (BoVW) của Sivic \& Zisserman~\cite{b11}, ứng dụng thứ hai (\texttt{src/applications/visual\_words.jl}) áp dụng negFIN trên tập ảnh chữ số viết tay \textbf{UCI Optical Recognition of Handwritten Digits (8$\times$8)} (4 lớp chữ số 0, 1, 3, 8, tối đa 150 ảnh/lớp, tổng cộng 600 ảnh -- Hình~\ref{fig:ch3_digits}). Quy trình chuyển đổi ảnh sang dữ liệu giao dịch được thiết kế chặt chẽ nhằm tránh rò rỉ dữ liệu (\textit{data leakage}):
 \begin{enumerate}
     \item \textbf{Chia tập dữ liệu:} Phân tầng theo từng lớp tỷ lệ 75\%/25\% với seed = 42, thu được \textbf{448 ảnh huấn luyện} và \textbf{152 ảnh kiểm thử}. Nhãn lớp \textbf{không} được sử dụng trong pha học từ điển và pha khai thác negFIN.
     \item \textbf{Trích xuất đặc trưng cục bộ:} Do ảnh có độ phân giải nhỏ $8 \times 8$, thay cho SIFT/ORB vốn cần ảnh lớn, chúng tôi tự cài đặt bộ trích \textbf{9 dense gradient descriptors} trên lưới $3 \times 3$ vùng cục bộ cho mỗi ảnh. Mỗi descriptor là vector 6 chiều gồm: cường độ trung bình, độ lệch chuẩn và 4 thành phần độ lớn gradient có hướng ($+x, -x, +y, -y$).
-    \item \textbf{Học từ điển \textit{Codebook} bằng K-means tự cài:} Thuật toán K-means thuần Julia ($K = 16$, seed = 42) được huấn luyện chỉ trên các descriptor của 448 ảnh train, sinh ra 16 \textit{visual words} ($W_1 \dots W_{16}$). Mỗi ảnh được lượng tử hóa thành một giao dịch chứa tập các visual word ID xuất hiện trong ảnh (đã loại trùng lặp).
+    \item \textbf{Học từ điển \textit{Codebook} bằng K-means tự cài:} Thuật toán K-means tự cài đặt ($K = 16$, seed = 42) được huấn luyện chỉ trên các descriptor của 448 ảnh train, sinh ra 16 \textit{visual words} ($W_1 \dots W_{16}$). Mỗi ảnh được lượng tử hóa thành một giao dịch chứa tập các visual word ID xuất hiện trong ảnh (đã loại trùng lặp).
     \item \textbf{Khai thác mẫu trực quan bằng negFIN:} Chạy \texttt{negfin\_optimized} trên 448 giao dịch train với $\text{min\_sup} = 0.12$ trong \textbf{0.2692 giây}, tìm được \textbf{154 tập phổ biến} (Support cross-check: PASS) và chọn lọc \textbf{60 mẫu trực quan} có độ dài $\ge 2$.
 \end{enumerate}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=0.92\columnwidth]{figures/ch3_digits_samples.png}
 \caption{Ứng dụng 2: Một số mẫu ảnh chữ số viết tay $8 \times 8$ đại diện cho 4 lớp (0, 1, 3, 8) trong tập dữ liệu UCI Digits.}
@@ -640,7 +653,7 @@ Sau khi khai thác không giám sát, nhãn tập train được dùng để tí
 \end{equation}
 Với 4 lớp cân bằng, giá trị lý thuyết tối đa của $\text{enrichment}$ là $4.00$ (mẫu chỉ xuất hiện độc quyền trong đúng 1 lớp). Bảng~\ref{tab:ch3_patterns} và Hình~\ref{fig:ch3_enriched} cho thấy negFIN phát hiện được nhiều tổ hợp từ trực quan có tính phân biệt lớp cực cao: chẳng hạn tổ hợp W6+W7+W10 và W2+W6+W7+W10 xuất hiện trong gần 60\% ảnh chữ số 0 với $\text{enrichment} = \mathbf{4.00}$ (gần như độc quyền cho lớp 0), hay tổ hợp W3+W4+W13+W16 đặc trưng mạnh cho lớp 3 với $\text{enrichment} = \mathbf{3.64}$.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \caption{Ứng dụng 2: Một số mẫu trực quan có độ làm giàu (Enrichment) cao nhất trên tập huấn luyện}
 \label{tab:ch3_patterns}
 \centering
@@ -660,7 +673,7 @@ W3+W4+W16 & 3 & 53 & 0.1317 & 0.4732 & 3.59 \\
 }
 \end{table}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
 \centering
 \includegraphics[width=\columnwidth]{figures/ch3_enriched_patterns.png}
 \caption{Ứng dụng 2: Các mẫu trực quan phổ biến có độ làm giàu (\textit{enrichment}) cao nhất phân theo lớp chữ số.}
@@ -669,7 +682,7 @@ W3+W4+W16 & 3 & 53 & 0.1317 & 0.4732 & 3.59 \\
 
 Để kiểm tra tác dụng thực tế trên bài toán phân loại ảnh, chúng tôi đánh giá bộ phân loại \textit{Nearest-Centroid} tự cài đặt trên tập kiểm thử độc lập (152 ảnh) với hai biểu diễn đặc trưng (Bảng~\ref{tab:ch3_acc}): (i) chỉ gồm 16 tần suất visual words (độ chính xác \textbf{79.61\%}), và (ii) ghép thêm 60 đặc trưng nhị phân chỉ báo sự xuất hiện của các frequent patterns (tổng 76 chiều, độ chính xác \textbf{78.95\%}).
 
-\begin{table}[htbp]
+\begin{table}[H]
 \caption{So sánh độ chính xác phân loại Nearest-Centroid trên tập kiểm thử độc lập (152 ảnh)}
 \label{tab:ch3_acc}
 \centering
@@ -697,7 +710,7 @@ Toàn bộ mã nguồn, bộ kiểm thử, số liệu thực nghiệm và noteb
 \toprule
 \textbf{Thành phần} & \textbf{Đường dẫn / Lệnh thực thi} \\
 \midrule
-Mã nguồn GitHub & \texttt{github.com/Thanhtung46/Frequent\_Itemset\_Mining} \\
+Mã nguồn GitHub & \texttt{github.com/Thanhtung46/18} \\
 Dataset Mirror & \texttt{huggingface.co/datasets/stephent9/} \\
  & \texttt{Lab1\_Frequent\_Itemset\_Mining} \\
 Unit Tests & \texttt{julia --project=. tests/runtests.jl} \\
@@ -719,7 +732,7 @@ Local NBs & \texttt{notebooks/local/*.ipynb} (Pure Julia) \\
 \begin{enumerate}
     \item Cài đặt chính xác 100\% thuật toán negFIN theo bài báo gốc (Aryabarzan et al., 2018) với đầy đủ 4 bậc, đạt 66/66 kiểm thử tự động thành công, kèm phiên bản tối ưu hóa Julia-native tận dụng Multiple Dispatch bit-packing, LCRS BMC-tree, SoA NodeSet, Early-Abort và xuất Promotion không cấp phát \textit{FIS\_parent}.
     \item Hoàn tất 6 thực nghiệm định lượng trên 5 bộ dữ liệu chuẩn công khai tại Hugging Face và dữ liệu tổng hợp, chứng minh tốc độ tăng lên đến \textbf{3.26$\times$} trên benchmark thực (\textbf{4.88$\times$} trên giao dịch dài), giảm \textbf{27.5\%--69.5\%} Heap cấp phát và mở rộng tuyến tính $O(|DB|)$.
-    \item Triển khai thành công hai ứng dụng thực tế thuần Julia gọi trực tiếp mã nguồn negFIN của nhóm trên dữ liệu Groceries (9,835 giao dịch, Top-10 Lift đạt 3.37) và ảnh UCI Digits (BoVW + K-means tự cài, Enrichment đạt 4.00), có đầy đủ notebook Google Colab tái lập 100\%.
+    \item Áp dụng thành công thuật toán negFIN tự xây dựng vào hai bài toán thực tế trên dữ liệu Groceries (9,835 giao dịch, Top-10 Lift đạt 3.37) và ảnh UCI Digits (BoVW + K-means tự cài, Enrichment đạt 4.00), có đầy đủ notebook Google Colab tái lập 100\%.
 \end{enumerate}
 
 Trong tương lai, nhóm dự kiến triển khai song song hóa đa luồng \texttt{Threads.@threads} ở tầng 1, nén \textit{Trimmed Bitset} cho dữ liệu thưa quy mô hàng chục nghìn item, và mở rộng sang khai thác tập phổ biến đóng (\textit{Closed FIM}) để phục vụ tốt hơn cho bài toán phân loại dữ liệu chiều cao.

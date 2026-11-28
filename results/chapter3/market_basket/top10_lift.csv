@@ -1,0 +1,11 @@
+antecedent,consequent,support_count,support,confidence,lift,leverage
+curd,whole milk + yogurt,99,0.01006609,0.18893130,3.37230365,0.00708116
+whole milk + yogurt,curd,99,0.01006609,0.17967332,3.37230365,0.00708116
+citrus fruit + other vegetables,root vegetables,102,0.01037112,0.35915493,3.29504546,0.00722363
+other vegetables + yogurt,whipped/sour cream,100,0.01016777,0.23419204,3.26706197,0.00705556
+other vegetables + tropical fruit,root vegetables,121,0.01230300,0.34277620,3.14477982,0.00839080
+beef,root vegetables,171,0.01738688,0.33139535,3.04036684,0.01166820
+root vegetables,beef,171,0.01738688,0.15951493,3.04036684,0.01166820
+citrus fruit + root vegetables,other vegetables,102,0.01037112,0.58620690,3.02960842,0.00694787
+root vegetables + tropical fruit,other vegetables,121,0.01230300,0.58454106,3.02099913,0.00823051
+other vegetables + whole milk,root vegetables,228,0.02318251,0.30978261,2.84208205,0.01502564

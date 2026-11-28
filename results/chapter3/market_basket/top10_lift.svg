@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="392" viewBox="0 0 760 392" style="max-width:100%;height:auto;">
+<rect width="100%" height="100%" fill="white"/>
+<text x="18" y="28" font-family="Arial" font-size="17" font-weight="bold">Groceries: Top 10 association rules by Lift</text>
+<text x="332" y="65" text-anchor="end" font-family="Arial" font-size="11.5">curd =&gt; whole milk + yogurt</text>
+<rect x="340" y="50" height="20" width="340" rx="3" fill="#3366a6"/>
+<text x="686" y="65" font-family="Arial" font-size="11.5">3.372</text>
+<text x="332" y="95" text-anchor="end" font-family="Arial" font-size="11.5">whole milk + yogurt =&gt; curd</text>
+<rect x="340" y="80" height="20" width="340" rx="3" fill="#3366a6"/>
+<text x="686" y="95" font-family="Arial" font-size="11.5">3.372</text>
+<text x="332" y="125" text-anchor="end" font-family="Arial" font-size="11.5">citrus fruit + other vegetables =&gt; root vegetables</text>
+<rect x="340" y="110" height="20" width="332" rx="3" fill="#3366a6"/>
+<text x="678" y="125" font-family="Arial" font-size="11.5">3.295</text>
+<text x="332" y="155" text-anchor="end" font-family="Arial" font-size="11.5">other vegetables + yogurt =&gt; whipped/sour cream</text>
+<rect x="340" y="140" height="20" width="329" rx="3" fill="#3366a6"/>
+<text x="675" y="155" font-family="Arial" font-size="11.5">3.267</text>
+<text x="332" y="185" text-anchor="end" font-family="Arial" font-size="11.5">other vegetables + tropical fruit =&gt; root vegetables</text>
+<rect x="340" y="170" height="20" width="317" rx="3" fill="#3366a6"/>
+<text x="663" y="185" font-family="Arial" font-size="11.5">3.145</text>
+<text x="332" y="215" text-anchor="end" font-family="Arial" font-size="11.5">beef =&gt; root vegetables</text>
+<rect x="340" y="200" height="20" width="307" rx="3" fill="#3366a6"/>
+<text x="653" y="215" font-family="Arial" font-size="11.5">3.040</text>
+<text x="332" y="245" text-anchor="end" font-family="Arial" font-size="11.5">root vegetables =&gt; beef</text>
+<rect x="340" y="230" height="20" width="307" rx="3" fill="#3366a6"/>
+<text x="653" y="245" font-family="Arial" font-size="11.5">3.040</text>
+<text x="332" y="275" text-anchor="end" font-family="Arial" font-size="11.5">citrus fruit + root vegetables =&gt; other vegetables</text>
+<rect x="340" y="260" height="20" width="305" rx="3" fill="#3366a6"/>
+<text x="651" y="275" font-family="Arial" font-size="11.5">3.030</text>
+<text x="332" y="305" text-anchor="end" font-family="Arial" font-size="11.5">root vegetables + tropical fruit =&gt; other vegetables</text>
+<rect x="340" y="290" height="20" width="305" rx="3" fill="#3366a6"/>
+<text x="651" y="305" font-family="Arial" font-size="11.5">3.021</text>
+<text x="332" y="335" text-anchor="end" font-family="Arial" font-size="11.5">other vegetables + whole milk =&gt; root vegetables</text>
+<rect x="340" y="320" height="20" width="287" rx="3" fill="#3366a6"/>
+<text x="633" y="335" font-family="Arial" font-size="11.5">2.842</text>
+<text x="340" y="380" font-family="Arial" font-size="12">Lift</text>
+</svg>

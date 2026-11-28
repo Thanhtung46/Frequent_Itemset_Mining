@@ -1,6 +1,6 @@
 # Đồ Án Khai Thác Tập Phổ Biến (Frequent Itemset Mining) — `negFIN`
 
-Cài đặt, tối ưu hóa, đánh giá thực nghiệm và xây dựng hai ứng dụng thực tế cho thuật toán **negFIN** (*Aryabarzan, Minaei-Bidgoli & Teshnehlab, 2018 — Expert Systems With Applications, 105, 129–143*) **100% bằng ngôn ngữ Julia ($\ge 1.9$)**.
+Cài đặt, tối ưu hóa, đánh giá thực nghiệm và xây dựng hai ứng dụng thực tế cho thuật toán **negFIN** (*Aryabarzan, Minaei-Bidgoli & Teshnehlab, 2018 — Expert Systems With Applications, 105, 129–143*) **bằng ngôn ngữ Julia**.
 
 ---
 
@@ -8,8 +8,8 @@ Cài đặt, tối ưu hóa, đánh giá thực nghiệm và xây dựng hai ứ
 
 | STT | Họ và tên | MSSV | Vai trò / Phụ trách chính |
 | :---: | :--- | :---: | :--- |
-| 1 | `Nguyễn Thanh Tùng` | `24127583` | Cài đặt thuật toán `negFIN` (Baseline & Optimized), Unit Tests, CLI |
-| 2 | `Nguyễn Tuấn Khanh` | `24127415` | Thực nghiệm Chương 2, Ứng dụng thực tế Chương 3, Báo cáo IEEE |
+| 1 | `Nguyễn Thanh Tùng` | `24127583` | Cài đặt thuật toán `negFIN` (Baseline & Optimized), Unit Tests, CLI, Thực nghiệm Chương 2 |
+| 2 | `Nguyễn Tuấn Khanh` | `24127415` | Ứng dụng thực tế Chương 3, Báo cáo |
 
 ---
 
@@ -19,19 +19,13 @@ Toàn bộ notebook trong `notebooks/colab/` đều chạy trực tiếp bằng 
 
 | Tài nguyên | Liên kết | Ghi chú |
 | :--- | :--- | :--- |
-| **Colab — Chương 2 (6 Thực nghiệm)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/colab/01_ch2_experiments.ipynb) | Tự động tải 5 bộ benchmark từ Hugging Face, chạy benchmark & vẽ 5 biểu đồ |
-| **Colab — Chương 3 (Ứng dụng 1: Market Basket)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/colab/02_ch3_app1_market_basket.ipynb) | Phân tích giỏ hàng `Groceries` + Top-10 luật theo `Lift` + biểu đồ SVG |
-| **Colab — Chương 3 (Ứng dụng 2: Visual Words)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/colab/03_ch3_app2_visual_words.ipynb) | Bag of Visual Words trên `UCI Digits 8×8` + đánh giá *Nearest-Centroid* |
-| **Colab — Chương 3 (Demo gộp cả 2 ứng dụng)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/Frequent_Itemset_Mining/blob/main/notebooks/colab/04_ch3_all_applications.ipynb) | Chạy kiểm thử + đầy đủ 2 ứng dụng Chương 3 trong 1 notebook duy nhất |
+| **Colab — Chương 2 (6 Thực nghiệm)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1-dBP14MTu5VC3g5ecyyPokXDAO3sRoe1?usp=sharing) | Tự động tải 5 bộ benchmark từ Hugging Face, chạy benchmark & vẽ 6 biểu đồ |
+| **Colab — Chương 3 (Ứng dụng 1: Market Basket)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/11A0g25vqiupDo2DAzdnVjGf4Z3aqIXFG?usp=sharing) | Phân tích giỏ hàng `Groceries` + Top-10 luật theo `Lift` + biểu đồ SVG |
+| **Colab — Chương 3 (Ứng dụng 2: Visual Words)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/03_ch3_app2_visual_words.ipynb) | Bag of Visual Words trên `UCI Digits 8×8` + đánh giá *Nearest-Centroid* |
+| **Colab — Chương 3 (Demo gộp cả 2 ứng dụng)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1Ci1hyDFa5AJnIjzlHDYl0wQaxaKnRkv9?usp=sharing) | Chạy kiểm thử + đầy đủ 2 ứng dụng Chương 3 trong 1 notebook duy nhất |
 | **Bộ dữ liệu Benchmark & Chương 3 (Hugging Face)** | https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining | 5 bộ Ch.2 (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`) + 2 bộ Ch.3 (`groceries.csv`, `digits8x8.csv`) |
-| **Bài báo gốc (`negFIN`)** | [DOI: 10.1016/j.eswa.2018.03.041](https://doi.org/10.1016/j.eswa.2018.03.041) | Aryabarzan et al. (2018), *negFIN: An efficient algorithm for fast mining frequent itemsets* |
+| **Bài báo gốc (`negFIN`)** | [DOI: 10.1016/j.eswa.2018.03.041](https://www.philippe-fournier-viger.com/spmf/NEGFINarticle.pdf) | Aryabarzan et al. (2018), *negFIN: An efficient algorithm for fast mining frequent itemsets* |
 | **Thư viện đối chiếu (`SPMF`)** | https://www.philippe-fournier-viger.com/spmf/ | Dùng `spmf.jar` (`NegFIN`) làm Ground Truth kiểm chứng 100% |
-
-> **Ghi chú về nguồn gốc dữ liệu (*Data Provenance & Mirror*):** Toàn bộ 7 bộ dữ liệu thực nghiệm được thu thập nguyên vẹn từ các nguồn học thuật công khai chuẩn:
-> - **Chương 2 (5 bộ benchmark):** [SPMF / FIMI Public Datasets](https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php) (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`).
-> - **Chương 3 — `Groceries`:** gói R [`arules` (Hahsler et al., 2006)](https://michael.hahsler.net/arules/reference/Groceries.html).
-> - **Chương 3 — `Digits 8×8`:** [UCI Machine Learning Repository — Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits) (xuất qua [`sklearn.datasets.load_digits`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html)).
-> - **Bản sao lưu công khai (*Public Mirror*):** Toàn bộ 7 tệp nguyên bản được lưu trữ tại [Hugging Face (`stephent9/Lab1_Frequent_Itemset_Mining`)](https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining) nhằm đảm bảo tốc độ tải ổn định và khả năng tái lập (*reproducibility*) 100% khi chạy trên Google Colab.
 
 > **Ghi chú về nguồn gốc dữ liệu (*Data Provenance & Mirror*):** Toàn bộ 7 bộ dữ liệu thực nghiệm được thu thập nguyên vẹn từ các nguồn học thuật công khai chuẩn:
 > - **Chương 2 (5 bộ benchmark):** [SPMF / FIMI Public Datasets](https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php) (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`).
@@ -43,52 +37,74 @@ Toàn bộ notebook trong `notebooks/colab/` đều chạy trực tiếp bằng 
 
 ## 3. Cấu trúc thư mục dự án
 
+| Thư mục / Tệp | Phạm vi | Vai trò chính |
+| :--- | :---: | :--- |
+| `src/algorithm/`, `structures.jl`, `utils.jl`, `main.jl` | Chương 1 | Lõi thuật toán `negFIN` (Baseline & Optimized), BMC-tree, CLI |
+| `scripts/`, `notebooks/*/01_*` | Chương 2 | Chạy 6 thực nghiệm benchmark trên 5 CSDL chuẩn & sinh biểu đồ |
+| `src/applications/`, `notebooks/*/02..04_*` | Chương 3 | 2 ứng dụng thực tế: Market Basket Analysis & Visual Words |
+| `tests/` | Kiểm thử | Bộ test tự động **66/66 PASS** (Chương 1, SPMF & Chương 3) |
+| `data/` | Dữ liệu | Tập toy, 5 benchmark FIMI/SPMF và dữ liệu ứng dụng Chương 3 |
+| `results/` | Kết quả | File CSV thực nghiệm, **9 biểu đồ** báo cáo & đầu ra Chương 3 |
+| `docs/` | Báo cáo | Mã nguồn LaTeX (`Report.tex`), PDF (`Report.pdf`) & hình ảnh |
+| `spmf/` | Đối chiếu | Nơi đặt `spmf.jar` khi chạy kiểm chứng chéo `SPMF NegFIN` ở local |
+
 ```text
-Frequent_Itemset_Mining/
-├── README.md                              # Tài liệu tổng quan, hướng dẫn cài đặt & kết quả kiểm thử
-├── Project.toml                           # Khai báo môi trường & dependencies Julia (phân nhóm rõ ràng)
-├── src/
-│   ├── algorithm/                         # Cài đặt lõi thuật toán negFIN (Chương 1)
-│   │   ├── negfin_baseline.jl             # Bản cơ bản bám sát giả mã Algorithm 1–4 (BitVector)
-│   │   └── negfin_optimized.jl            # Bản tối ưu (UInt64/UInt128/NTuple, LCRS, Early-Abort, zero-alloc)
-│   ├── applications/                      # 2 ứng dụng thực tế thuần Julia (Chương 3)
-│   │   ├── applications.jl                # Module Applications nạp trực tiếp negFIN Chương 1
-│   │   ├── app_utils.jl                   # Cầu nối negFIN, validate_support, in bảng, xuất CSV/SPMF/SVG
-│   │   ├── market_basket.jl               # Ứng dụng 1: Phân tích giỏ hàng Groceries & luật kết hợp
-│   │   ├── visual_words.jl                # Ứng dụng 2: Dense gradient, K-means, Bag of Visual Words
-│   │   ├── run_market_basket.jl           # CLI chạy Ứng dụng 1
-│   │   └── run_visual_words.jl            # CLI chạy Ứng dụng 2
-│   ├── structures.jl                      # Cấu trúc BMC-tree (LCRS), NodeSet (SoA), Multiple Dispatch bit-packing
-│   ├── utils.jl                           # Đọc/ghi chuẩn SPMF, đối chiếu kết quả compare_results
-│   └── main.jl                            # Entry-point CLI Chương 1 (--input, --output, --minsup, --algo, --stats)
+18/
+├── README.md                      # Tổng quan, hướng dẫn cài đặt & kết quả kiểm thử
+├── Project.toml                   # Khai báo môi trường & thư viện Julia (theo nhóm)
+│
+├── src/                           # Mã nguồn thuần Julia của dự án
+│   ├── structures.jl              # BMC-tree (LCRS), NodeSet (SoA), bit-packing
+│   ├── utils.jl                   # Đọc/ghi chuẩn SPMF & hàm đối chiếu compare_results
+│   ├── main.jl                    # CLI Chương 1 (--input, --output, --minsup, --algo)
+│   ├── algorithm/                 # Lõi thuật toán negFIN (Chương 1)
+│   │   ├── negfin_baseline.jl     # Bản cơ bản bám sát giả mã Algorithm 1–4
+│   │   └── negfin_optimized.jl    # Bản tối ưu (UInt64/128/NTuple, Early-Abort)
+│   └── applications/              # 2 ứng dụng thực tế thuần Julia (Chương 3)
+│       ├── applications.jl        # Module Applications nạp trực tiếp negFIN
+│       ├── app_utils.jl           # Cầu nối negFIN, validate_support, in bảng, SVG
+│       ├── market_basket.jl       # Ứng dụng 1: Phân tích giỏ hàng & luật kết hợp
+│       ├── visual_words.jl        # Ứng dụng 2: Gradient, K-means, Bag of Visual Words
+│       ├── run_market_basket.jl   # CLI chạy Ứng dụng 1
+│       └── run_visual_words.jl    # CLI chạy Ứng dụng 2
+│
 ├── scripts/
-│   └── run_benchmarks.jl                  # Script chạy tự động 6 thực nghiệm Chương 2, xuất CSV
+│   └── run_benchmarks.jl          # Tự động chạy 6 thực nghiệm Chương 2 & xuất CSV
+│
 ├── tests/
-│   ├── runtests.jl                        # Bộ test Chương 1 (39/39 PASS, gồm đối chiếu SPMF)
-│   ├── test_correctness.jl                # Kiểm thử đúng đắn trên 7 CSDL/trường hợp biên + SPMF NegFIN
-│   ├── test_benchmark.jl                  # Đối chứng tốc độ & bộ nhớ Baseline vs. Optimized
-│   └── test_ch3_julia.jl                  # Kiểm thử tích hợp 2 ứng dụng Chương 3 (27/27 PASS)
-├── data/
-│   ├── toy/                               # Dữ liệu mẫu kiểm thử nhanh (`paper_example1.txt` — Table 1 bài báo)
-│   ├── benchmark/                         # 5 bộ dữ liệu chuẩn tải từ Hugging Face (bỏ qua trong .gitignore)
-│   ├── synthetic/                         # Dữ liệu tổng hợp cho thực nghiệm scalability & tx length
-│   └── chapter3/                          # `digits8x8.csv` (có sẵn), `SOURCE.md`, `groceries.csv` tự tải khi chạy
-├── notebooks/
-│   ├── colab/                             # Phiên bản Google Colab (100% Pure Julia Runtime, có SETUP & CONFIG)
+│   ├── runtests.jl                # Bộ test Chương 1 (39/39 PASS, gồm đối chiếu SPMF)
+│   ├── test_correctness.jl        # Kiểm thử đúng đắn 7 CSDL/trường hợp biên & SPMF
+│   ├── test_benchmark.jl          # Đối chứng tốc độ & bộ nhớ Baseline vs. Optimized
+│   └── test_ch3_julia.jl          # Kiểm thử tích hợp 2 ứng dụng Chương 3 (27/27 PASS)
+│
+├── notebooks/                     # 8 Notebook 100% Pure Julia (Colab & Local)
+│   ├── colab/                     # Tự clone repo & tải dữ liệu từ Hugging Face
 │   │   ├── 01_ch2_experiments.ipynb
 │   │   ├── 02_ch3_app1_market_basket.ipynb
 │   │   ├── 03_ch3_app2_visual_words.ipynb
 │   │   └── 04_ch3_all_applications.ipynb
-│   └── local/                             # Phiên bản Local (100% Pure Julia, chạy thẳng không cần setup)
+│   └── local/                     # Chạy trực tiếp trên máy cá nhân, không cần setup
 │       ├── 01_ch2_experiments.ipynb
 │       ├── 02_ch3_app1_market_basket.ipynb
 │       ├── 03_ch3_app2_visual_words.ipynb
 │       └── 04_ch3_all_applications.ipynb
+│
+├── data/
+│   ├── toy/                       # Dữ liệu mẫu kiểm thử nhanh (paper_example1.txt)
+│   ├── benchmark/                 # 5 CSDL chuẩn tải từ Hugging Face (.gitignore)
+│   └── chapter3/                  # digits8x8.csv, SOURCE.md, groceries.csv (tự tải)
+│
 ├── results/
-│   ├── logs/                              # Bảng số liệu CSV của 6 thực nghiệm Chương 2 (`exp1..exp6.csv`)
-│   ├── figures/                           # Toàn bộ 8 biểu đồ cho báo cáo (5 PNG Chương 2 + 3 SVG Chương 3)
-│   └── chapter3/                          # Kết quả chi tiết Chương 3 (`summary.txt`, `*.csv`, `*.spmf`, `*.svg`)
-└── spmf/                                  # Đặt `spmf.jar` tại đây khi muốn chạy đối chiếu SPMF ở local
+│   ├── logs/                      # Bảng số liệu CSV 6 thực nghiệm (exp1..exp6.csv)
+│   ├── figures/                   # 9 biểu đồ báo cáo (6 PNG Chương 2 + 3 SVG Chương 3)
+│   └── chapter3/                  # Đầu ra Chương 3 (summary, CSV, SPMF, SVG)
+│
+├── docs/
+│   ├── Report.tex                 # Mã nguồn báo cáo IEEE hai cột (XeLaTeX)
+│   ├── Report.pdf                 # Bản báo cáo PDF hoàn chỉnh (10 trang)
+│   └── figures/                   # Bộ hình PNG xuất cho báo cáo LaTeX
+│
+└── spmf/                          # Đặt spmf.jar tại đây khi đối chiếu SPMF ở local
 ```
 
 ---
@@ -101,8 +117,8 @@ Frequent_Itemset_Mining/
 
 ### Bước 1: Clone repository & cài đặt môi trường (chạy 1 lần)
 ```bash
-git clone https://github.com/Thanhtung46/Frequent_Itemset_Mining.git
-cd Frequent_Itemset_Mining
+git clone https://github.com/Thanhtung46/18.git
+cd 18
 julia --project=. -e 'using Pkg; Pkg.instantiate()'
 ```
 *(Thư viện lõi `negFIN` chỉ dùng Julia stdlib; `CSV`, `DataFrames`, `Plots` trong `Project.toml` chỉ phục vụ đọc bảng số liệu và vẽ biểu đồ Chương 2.)*

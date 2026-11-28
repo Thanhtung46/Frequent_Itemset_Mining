@@ -4,6 +4,18 @@ summary.md
 *.log
 spmf/*.jar
 data/benchmark/*.txt
-# Generated outputs and downloaded Ch3 Groceries dataset
-results/chapter3/
+# Downloaded Ch3 Groceries dataset
 data/chapter3/groceries.csv
+
+
+note.md
+.gitignore
+
+docs
+.agents
+
+CH3_INTEGRATION.md
+
+CH3_MERGE_GUIDE.md
+
+Manifest.toml

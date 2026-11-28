@@ -8,7 +8,7 @@ Hai ứng dụng dùng chính `negfin_baseline(...)` hoặc `negfin_optimized(..
 
 ## Ứng dụng 1 — Market Basket Analysis
 
-- **Nguồn**: Groceries – 9.835 giao dịch của cửa hàng bán lẻ, 169 nhóm sản phẩm theo tài liệu `arules`. Tải CSV từ nguồn được ghi trong `applications/market_basket.jl` vào `data/chapter3/groceries.csv` khi chạy lần đầu (máy cần Internet).
+- **Nguồn**: Groceries – 9.835 giao dịch của cửa hàng bán lẻ, 169 nhóm sản phẩm theo tài liệu `arules`. Tải CSV từ nguồn được ghi trong `src/applications/market_basket.jl` vào `data/chapter3/groceries.csv` khi chạy lần đầu (máy cần Internet).
 - **Chuyển đổi**: mỗi dòng CSV là một giao dịch; bỏ ô rỗng, chuẩn hóa khoảng trắng, loại item lặp trong một giao dịch; từ điển sản phẩm xếp thứ tự chữ cái rồi ánh xạ sang ID nguyên 1..N. File `transactions.spmf` và `item_mapping.csv` cho phép tái hiện.
 - **Khai thác**: gọi `mine_itemsets` là cầu nối đến `negfin_baseline`/`negfin_optimized`. Có kiểm tra `support` bằng cách đếm giao dịch trực tiếp để phát hiện sai lệch.
 - **Sinh luật**: từ từng frequent itemset Z (|Z| >= 2), xét mọi tập con X khác rỗng và khác Z, Y = Z\X. Dùng support đã khai thác, không gọi thư viện luật kết hợp.
@@ -36,11 +36,11 @@ Hai ứng dụng dùng chính `negfin_baseline(...)` hoặc `negfin_optimized(..
 ```powershell
 julia --project=. tests/runtests.jl
 julia --project=. tests/test_ch3_julia.jl
-julia --project=. applications/run_market.jl
-julia --project=. applications/run_visual.jl
+julia --project=. src/applications/run_market_basket.jl
+julia --project=. src/applications/run_visual_words.jl
 ```
 
-Ngoài ra, chạy `notebooks/demo.ipynb` trên Google Colab với **Python 3 kernel (chỉ là shell launcher)**. Các ô thực thi dùng `%%bash`/`!julia`, không import thư viện Python để xử lý dữ liệu hoặc khai thác itemset; notebook có bước cài Julia. Không thay metadata notebook sang Julia nếu vẫn sử dụng cú pháp shell đặc thù của Colab.
+Ngoài ra, chạy `notebooks/colab/04_ch3_all_applications.ipynb` (hoặc 2 notebook riêng `02_ch3_app1_market_basket.ipynb`, `03_ch3_app2_visual_words.ipynb`) trực tiếp trên Google Colab bằng **Julia Runtime** (`Runtime -> Change runtime type -> Julia`), hoặc mở bản trong `notebooks/local/` để chạy trực tiếp trên máy cá nhân.
 
 **Không dùng đầu ra cũ của bản Python làm bằng chứng chạy Julia.** Các tệp `summary.json`, `*.png` từng nằm trong `results/chapter3/` là kết quả phiên bản trước; bản Julia xuất `summary.txt`, CSV và SVG, cần chạy lại để thu số liệu xác thực.
 
