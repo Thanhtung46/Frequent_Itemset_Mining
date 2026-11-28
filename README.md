@@ -1,237 +1,224 @@
-# Đồ án Khai thác Tập phổ biến (Frequent Itemset Mining) — negFIN
+# Đồ Án Khai Thác Tập Phổ Biến (Frequent Itemset Mining) — `negFIN`
 
-Cài đặt thuật toán **negFIN** từ bài báo gốc, tối ưu hóa bằng **Julia**, đánh giá trên dữ liệu benchmark và triển khai hai ứng dụng thực tế. Repo bao gồm mã nguồn, bộ kiểm thử, Jupyter Notebook và báo cáo IEEE hai cột.
+Cài đặt, tối ưu hóa, đánh giá thực nghiệm và xây dựng hai ứng dụng thực tế cho thuật toán **negFIN** (*Aryabarzan, Minaei-Bidgoli & Teshnehlab, 2018 — Expert Systems With Applications, 105, 129–143*) **bằng ngôn ngữ Julia**.
 
-> **Kết quả đã ghi nhận trước khi cập nhật repository:** **66/66 kiểm thử PASS** (39/39 Chương 1–2; 27/27 Chương 3); CSV lưu **30/30 cấu hình đối chiếu SPMF MATCH 100%**. `docs/Report.pdf` gồm 12 trang, có đồ thị thời gian theo MinSup và hình chữ số đủ 4 lớp. Việc sửa notebook và dọn file không thay thế cho một lần chạy lại kiểm thử.
+---
 
-## 1. Thành viên và phân công
+## 1. Thông tin nhóm
 
-| Thành viên | MSSV | Phụ trách chính |
-| --- | --- | --- |
-| Nguyễn Thanh Tùng | 24127583 | negFIN Baseline/Optimized, CLI, kiểm thử và Chương 2 |
-| Nguyễn Tuấn Khanh | 24127415 | Hai ứng dụng Chương 3 và báo cáo |
+| STT | Họ và tên | MSSV | Vai trò / Phụ trách chính |
+| :---: | :--- | :---: | :--- |
+| 1 | `Nguyễn Thanh Tùng` | `24127583` | Cài đặt thuật toán `negFIN` (Baseline & Optimized), Unit Tests, CLI, Thực nghiệm Chương 2 |
+| 2 | `Nguyễn Tuấn Khanh` | `24127415` | Ứng dụng thực tế Chương 3, Báo cáo |
 
-## 2. Mã nguồn, notebook và dữ liệu
+---
 
-| Tài nguyên | Liên kết / Vị trí |
-| --- | --- |
-| Repository GitHub | <https://github.com/Thanhtung46/18> |
-| Colab Chương 2 — Thực nghiệm | [Mở notebook 01](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/01_ch2_experiments.ipynb) |
-| Colab Chương 3 — Market Basket | [Mở notebook 02](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/02_ch3_app1_market_basket.ipynb) |
-| Colab Chương 3 — Visual Words | [Mở notebook 03](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/03_ch3_app2_visual_words.ipynb) |
-| Colab Chương 3 — Demo hai ứng dụng | [Mở notebook 04](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/04_ch3_all_applications.ipynb) |
-| Dữ liệu benchmark và ứng dụng (bản sao công khai) | <https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining> |
-| SPMF (chương trình đối chiếu) | <https://www.philippe-fournier-viger.com/spmf/> |
-| Bài báo negFIN | N. Aryabarzan et al., *Expert Systems with Applications*, 2018; xem tài liệu tham khảo trong báo cáo |
-| Báo cáo IEEE — bản cập nhật 12 trang | [`docs/Report.pdf`](docs/Report.pdf) |
+## 2. Liên kết Google Colab & Tài nguyên
 
-**Nguồn dữ liệu:** Chương 2 sử dụng Chess, Mushroom, Accidents, Retail và T10I4D100K; Chương 3 sử dụng Groceries (gói R `arules`) và UCI Optical Recognition of Handwritten Digits (ảnh 8×8). Dữ liệu được mirror trên Hugging Face để thuận tiện khi chạy notebook.
+Toàn bộ notebook trong `notebooks/colab/` đều chạy trực tiếp bằng **Google Colab Julia Runtime** (*Runtime $\rightarrow$ Change runtime type $\rightarrow$ `Julia`*).
 
-## 3. Cấu trúc dự án (đúng với ZIP hiện tại)
+| Tài nguyên | Liên kết | Ghi chú |
+| :--- | :--- | :--- |
+| **Colab — Chương 2 (6 Thực nghiệm)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/01_ch2_experiments.ipynb) | Tự động tải 5 bộ benchmark từ Hugging Face, chạy benchmark & vẽ 6 biểu đồ |
+| **Colab — Chương 3 (Ứng dụng 1: Market Basket)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/02_ch3_app1_market_basket.ipynb) | Phân tích giỏ hàng `Groceries` + Top-10 luật theo `Lift` + biểu đồ SVG |
+| **Colab — Chương 3 (Ứng dụng 2: Visual Words)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/03_ch3_app2_visual_words.ipynb) | Bag of Visual Words trên `UCI Digits 8×8` + đánh giá *Nearest-Centroid* |
+| **Colab — Chương 3 (Demo gộp cả 2 ứng dụng)** | [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/Thanhtung46/18/blob/main/notebooks/colab/04_ch3_all_applications.ipynb) | Chạy kiểm thử + đầy đủ 2 ứng dụng Chương 3 trong 1 notebook duy nhất |
+| **Bộ dữ liệu Benchmark & Chương 3 (Hugging Face)** | https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining | 5 bộ Ch.2 (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`) + 2 bộ Ch.3 (`groceries.csv`, `digits8x8.csv`) |
+| **Bài báo gốc (`negFIN`)** | [DOI: 10.1016/j.eswa.2018.03.041](https://www.philippe-fournier-viger.com/spmf/NEGFINarticle.pdf) | Aryabarzan et al. (2018), *negFIN: An efficient algorithm for fast mining frequent itemsets* |
+| **Thư viện đối chiếu (`SPMF`)** | https://www.philippe-fournier-viger.com/spmf/ | Dùng `spmf.jar` (`NegFIN`) để đối chiếu tập phổ biến và support |
+| **Kết quả benchmark SPMF (30 cấu hình)** | [`spmf_cli_comparison.csv`](results/spmf_comparison/spmf_cli_comparison.csv) | 5 dataset × 6 mức MinSup; SPMF vs. Julia Baseline vs. Optimized |
+
+> **Ghi chú về nguồn gốc dữ liệu (*Data Provenance & Mirror*):** Toàn bộ 7 bộ dữ liệu thực nghiệm được thu thập nguyên vẹn từ các nguồn học thuật công khai chuẩn:
+> - **Chương 2 (5 bộ benchmark):** [SPMF / FIMI Public Datasets](https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php) (`chess`, `mushroom`, `accidents`, `retail`, `T10I4D100K`).
+> - **Chương 3 — `Groceries`:** gói R [`arules` (Hahsler et al., 2006)](https://michael.hahsler.net/arules/reference/Groceries.html).
+> - **Chương 3 — `Digits 8×8`:** [UCI Machine Learning Repository — Optical Recognition of Handwritten Digits](https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits) (xuất qua [`sklearn.datasets.load_digits`](https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_digits.html)).
+> - **Bản sao lưu công khai (*Public Mirror*):** Toàn bộ 7 tệp nguyên bản được lưu trữ tại [Hugging Face (`stephent9/Lab1_Frequent_Itemset_Mining`)](https://huggingface.co/datasets/stephent9/Lab1_Frequent_Itemset_Mining) nhằm đảm bảo tốc độ tải ổn định và khả năng tái lập (*reproducibility*) 100% khi chạy trên Google Colab.
+
+---
+
+## 3. Cấu trúc thư mục dự án
+
+| Thư mục / Tệp | Phạm vi | Vai trò chính |
+| :--- | :---: | :--- |
+| `src/algorithm/`, `src/structures.jl`, `src/utils.jl`, `src/main.jl` | Chương 1 | Lõi thuật toán `negFIN` (Baseline & Optimized), BMC-tree, CLI |
+| `scripts/`, `notebooks/*/01_*` | Chương 2 | 6 thực nghiệm và so sánh SPMF trên 5 CSDL × 6 mức MinSup |
+| `src/applications/`, `notebooks/*/02..04_*` | Chương 3 | 2 ứng dụng thực tế: Market Basket Analysis & Visual Words |
+| `tests/` | Kiểm thử | Bộ test tự động **66/66 PASS** (Chương 1, SPMF & Chương 3) |
+| `data/` | Dữ liệu | Có tập toy và `digits8x8.csv`; 5 benchmark và `groceries.csv` cần tải khi chạy |
+| `results/` | Kết quả | CSV và **9 biểu đồ** Chương 2–3; thêm CSV và **6 SVG** so sánh SPMF |
+| `docs/` | Báo cáo | Hiện có `Report.pdf` (12 trang); chưa có `Report.tex` và `docs/figures/` trong ZIP |
+| `spmf/` | Đối chiếu | Thư mục cần tự tạo để đặt `spmf.jar` tương thích Java; không đóng gói JAR |
 
 ```text
 datamining/
-├── .gitignore
-├── Project.toml
-├── README.md
-├── src/
-│   ├── algorithm/
-│   │   ├── negfin_baseline.jl
-│   │   └── negfin_optimized.jl
-│   ├── applications/
-│   │   ├── applications.jl
-│   │   ├── app_utils.jl
-│   │   ├── market_basket.jl
-│   │   ├── visual_words.jl
-│   │   ├── run_market_basket.jl
-│   │   └── run_visual_words.jl
-│   ├── main.jl
-│   ├── structures.jl
-│   └── utils.jl
-├── tests/
-│   ├── runtests.jl
-│   ├── test_correctness.jl
-│   ├── test_benchmark.jl
-│   └── test_ch3_julia.jl
+├── .gitignore                    # Bỏ qua dữ liệu tải về, JAR & file LaTeX tạm
+├── README.md                     # Tổng quan, hướng dẫn cài đặt & kết quả kiểm thử
+├── Project.toml                  # Khai báo môi trường & thư viện Julia
+│
+├── src/                          # Mã nguồn thuần Julia của dự án
+│   ├── structures.jl             # BMC-tree (LCRS), NodeSet (SoA), bit-packing
+│   ├── utils.jl                  # Đọc/ghi chuẩn SPMF & hàm compare_results
+│   ├── main.jl                   # CLI Chương 1 (--input, --output, --minsup, --algo)
+│   ├── algorithm/                # Lõi thuật toán negFIN (Chương 1)
+│   │   ├── negfin_baseline.jl    # Bản cơ bản bám sát giả mã Algorithm 1–4
+│   │   └── negfin_optimized.jl   # Bản tối ưu (UInt64/128/NTuple, Early-Abort)
+│   └── applications/             # 2 ứng dụng thực tế thuần Julia (Chương 3)
+│       ├── applications.jl       # Module Applications nạp trực tiếp negFIN
+│       ├── app_utils.jl          # Cầu nối negFIN, validate_support, bảng, SVG
+│       ├── market_basket.jl      # Ứng dụng 1: Phân tích giỏ hàng & luật kết hợp
+│       ├── visual_words.jl       # Ứng dụng 2: Gradient, K-means, Bag of Visual Words
+│       ├── run_market_basket.jl  # CLI chạy Ứng dụng 1
+│       └── run_visual_words.jl   # CLI chạy Ứng dụng 2
+│
 ├── scripts/
-│   ├── run_benchmarks.jl
-│   └── compare_spmf_cli.jl
-├── notebooks/
-│   ├── colab/                         # 01, 02, 03, 04 (.ipynb)
-│   └── local/                         # 01, 02, 03, 04 (.ipynb)
+│   ├── run_benchmarks.jl         # 6 thực nghiệm Chương 2
+│   └── compare_spmf_cli.jl       # SPMF vs. Baseline vs. Optimized (--full: 30 cấu hình)
+│
+├── tests/
+│   ├── runtests.jl               # Bộ test Chương 1–2 (39/39 khi có SPMF)
+│   ├── test_correctness.jl       # Kiểm thử đúng đắn, đối chiếu với SPMF
+│   ├── test_benchmark.jl         # Đối chứng hiệu năng Baseline vs. Optimized
+│   └── test_ch3_julia.jl         # Kiểm thử 2 ứng dụng Chương 3 (27/27)
+│
+├── notebooks/                    # 8 Notebook Julia (Colab & Local)
+│   ├── colab/                    # Julia Runtime, tự clone repo khi chạy
+│   │   ├── 01_ch2_experiments.ipynb
+│   │   ├── 02_ch3_app1_market_basket.ipynb
+│   │   ├── 03_ch3_app2_visual_words.ipynb
+│   │   └── 04_ch3_all_applications.ipynb
+│   └── local/                    # Julia Kernel trên máy cá nhân
+│       ├── 01_ch2_experiments.ipynb
+│       ├── 02_ch3_app1_market_basket.ipynb
+│       ├── 03_ch3_app2_visual_words.ipynb
+│       └── 04_ch3_all_applications.ipynb
+│
 ├── data/
-│   ├── toy/
-│   │   └── paper_example1.txt
-│   └── chapter3/
-│       └── digits8x8.csv
+│   ├── toy/                      # Dữ liệu mẫu paper_example1.txt
+│   ├── benchmark/                # .gitkeep; 5 bộ benchmark tải riêng khi chạy
+│   └── chapter3/                 # Có digits8x8.csv; groceries.csv tải khi cần
+│
 ├── results/
-│   ├── logs/                          # CSV của 6 nhóm thực nghiệm Chương 2
-│   ├── figures/                       # Hình Chương 2 và 3 (.png, .svg)
-│   ├── spmf_comparison/               # CSV + 6 SVG + môi trường benchmark SPMF
-│   └── chapter3/
-│       ├── market_basket/             # Bảng, dữ liệu, SVG và kết quả chạy
-│       └── visual_words/             # Bảng, dữ liệu, SVG và kết quả chạy
+│   ├── logs/                     # 5 CSV chứa kết quả 6 thực nghiệm Chương 2
+│   ├── figures/                  # 6 PNG Chương 2 + 3 SVG Chương 3
+│   ├── spmf_comparison/          # 30 dòng CSV, 6 biểu đồ SVG, môi trường đo
+│   └── chapter3/                 # Đầu ra market_basket/ và visual_words/
+│
 └── docs/
-    └── Report.pdf                     # Báo cáo đã biên dịch, 12 trang
+    └── Report.pdf                # Báo cáo IEEE đã biên dịch (12 trang)
 ```
 
-**Các thành phần không có sẵn trong ZIP:**
 
-- `Manifest.toml`: không có trong repository; Julia có thể tạo sau `Pkg.instantiate()` và hiện được `.gitignore` bỏ qua.
-- `data/benchmark/`: chưa đóng gói 5 tập dữ liệu lớn. Cần tải vào thư mục này trước khi chạy `scripts/run_benchmarks.jl`. Script `scripts/compare_spmf_cli.jl` có chức năng tự tải dữ liệu còn thiếu từ Hugging Face.
-- `data/chapter3/groceries.csv`: được ứng dụng Market Basket tải tự động khi cần (nếu truy cập mạng thành công).
-- `spmf/spmf.jar`: cần tự tạo thư mục `spmf/` và chép JAR tương thích vào khi muốn chạy các phép đối chiếu trực tiếp.
-- `docs/Report.tex`, `docs/figures/` và `docs/benchmark_data/`: **không nằm trong ZIP này**. Mã nguồn LaTeX và bộ hình phục vụ biên dịch báo cáo cần được bổ sung riêng nếu giảng viên yêu cầu; hình và CSV dùng để tham khảo đang có ở `results/`.
+**Lưu ý về file chưa có trong ZIP:** `Manifest.toml`, `docs/Report.tex`, `docs/figures/`, `docs/benchmark_data/` và `spmf/spmf.jar` không được đóng gói. `data/benchmark/` chỉ có `.gitkeep`, còn `data/chapter3/groceries.csv` được tải khi chạy ứng dụng. Script `scripts/compare_spmf_cli.jl` **đã có sẵn**, không cần chép thêm. Nếu cần biên dịch lại PDF từ LaTeX, phải bổ sung nguồn LaTeX và các hình tương ứng.
 
-`compare_spmf_cli.jl` **đã nằm sẵn** trong `scripts/`, không cần chép thêm từ gói benchmark khác.
+---
 
-## 4. Cài đặt và chạy trên máy cá nhân
+## 4. Hướng dẫn cài đặt & chạy
 
-### Yêu cầu
+### Yêu cầu môi trường
+- **Julia $\ge 1.9$** (môi trường thực nghiệm đã ghi nhận sử dụng Julia 1.13.4 trên Windows).
+- *(Tùy chọn cho kiểm thử SPMF)* **Java 25** và file `spmf/spmf.jar` tương thích. Bản JAR đã dùng trong thực nghiệm được biên dịch cho Java 25; các JAR khác có thể có yêu cầu phiên bản khác.
 
-- **Julia ≥ 1.9**; các lần kiểm thử đã ghi nhận sử dụng Julia 1.13.4 (Windows) và Julia trên Google Colab.
-- **Java và `spmf.jar` tương thích** nếu cần đối chiếu trực tiếp với SPMF. **File `spmf.jar` đã kiểm thử yêu cầu Java 25** (class-file version 69); Java 8 hoặc Java 21 không chạy được *file JAR đó*. Một bản JAR khác có thể có yêu cầu Java khác.
-- PowerShell/CMD trên Windows hoặc shell macOS/Linux. Không cần Python để chạy lõi negFIN và hai ứng dụng Chương 3.
-
-### Cài Julia packages
-
-```powershell
-# Mở terminal tại thư mục gốc project
-julia --version
+### Bước 1: Clone repository & cài đặt môi trường (chạy 1 lần)
+```bash
+git clone https://github.com/Thanhtung46/18.git
+cd 18
 julia --project=. -e "using Pkg; Pkg.instantiate()"
 ```
+*(Thư viện lõi `negFIN` chỉ dùng Julia stdlib; `CSV`, `DataFrames`, `Plots` trong `Project.toml` chỉ phục vụ đọc bảng số liệu và vẽ biểu đồ Chương 2.)*
 
-Repository chỉ cung cấp `Project.toml` (đã khai báo CSV, DataFrames, Plots và các Julia standard libraries). `Pkg.instantiate()` sẽ cài gói cần thiết và có thể tạo `Manifest.toml` ở máy bạn; file đó không nằm trong ZIP và đang được `.gitignore` bỏ qua. Nếu việc giải quyết dependency gặp lỗi, có thể thử `julia --project=. -e "using Pkg; Pkg.resolve(); Pkg.instantiate()"`.
-
-### Kiểm thử Chương 1–2 và SPMF
-
-1. Tạo thư mục `spmf` nếu chưa tồn tại (`mkdir spmf`), rồi tải `spmf.jar` và đặt tại `spmf/spmf.jar`.
-2. Kiểm tra Java đang được ưu tiên trên `PATH` (ví dụ PowerShell):
-
-```powershell
-java -version
-Test-Path .\spmf\spmf.jar
-```
-
-3. Chạy:
-
-```powershell
+### Bước 2: Chạy toàn bộ bộ kiểm thử tự động (66/66 PASS)
+```bash
+# Chương 1–2: 39/39 PASS khi có spmf/spmf.jar và Java tương thích
 julia --project=. tests/runtests.jl
-```
 
-**Kết quả mong đợi:** `NegFIN Test Suite | 39 | 39` và 5 bộ đối chiếu `MATCH 100%` cho cả Baseline/Optimized. Nếu không có JAR hoặc Java tương thích, **10 kiểm thử SPMF sẽ bị bỏ qua** và có thể chỉ đạt **29/29**; không được coi như đã kiểm tra trực tiếp SPMF.
-
-### Kiểm thử Chương 3
-
-```powershell
+# Chương 3: 27/27 PASS
 julia --project=. tests/test_ch3_julia.jl
 ```
+*Lưu ý:* Nếu thiếu `spmf.jar` hoặc Java phù hợp, bộ kiểm thử Chương 1–2 bỏ qua 10 phép đối chiếu trực tiếp SPMF (còn 29/29). Kết quả **66/66** là kết quả đã ghi nhận từ lần chạy đầy đủ trước đó, không phải kết quả tự động bảo đảm trên mọi máy.
 
-**Kết quả ghi nhận trước đó trên Colab:** `Chapter 3 Julia applications | 27 | 27` (`ProcessExited(0)` khi chạy bộ test trong tiến trình Julia riêng).
+### Bước 3: Chạy thuật toán `negFIN` qua dòng lệnh (Chương 1 — CLI)
+```bash
+# Bản tối ưu (mặc định), dùng một dòng để chạy được trên Windows CMD/PowerShell
+julia --project=. src/main.jl --input data/toy/paper_example1.txt --output results/out.txt --minsup 0.4 --algo optimized --stats
 
-### Chạy CLI negFIN (Chương 1)
-
-```powershell
-julia --project=. src/main.jl --input data/toy/paper_example1.txt --output results/out_optimized.txt --minsup 0.4 --algo optimized --stats
-julia --project=. src/main.jl --input data/toy/paper_example1.txt --output results/out_baseline.txt --minsup 0.4 --algo baseline --stats
+# Bản cơ bản (Baseline) để đối chiếu
+julia --project=. src/main.jl --input data/toy/paper_example1.txt --output results/out_base.txt --minsup 0.4 --algo baseline --stats
 ```
 
-### Chạy Chương 2
-
-```powershell
+### Bước 4: Chạy 6 thực nghiệm & vẽ 6 biểu đồ (Chương 2)
+- **Google Colab:** Mở [notebooks/colab/01_ch2_experiments.ipynb](notebooks/colab/01_ch2_experiments.ipynb) $\rightarrow$ chọn **Julia Runtime** $\rightarrow$ **Run all**.
+- **Local Notebook:** Mở [notebooks/local/01_ch2_experiments.ipynb](notebooks/local/01_ch2_experiments.ipynb) bằng **Julia Kernel** $\rightarrow$ **Run All**.
+- **Local CLI** *(đặt đủ 5 bộ dữ liệu `.txt` trong `data/benchmark/` trước khi chạy; notebook Colab có bước tải dữ liệu)*:
+```bash
+# 6 thực nghiệm Chương 2 (Baseline và Optimized)
 julia --project=. scripts/run_benchmarks.jl
-```
 
-**Trước khi chạy trên Windows**, hãy tải đủ 5 file `chess.txt`, `mushroom.txt`, `accidents.txt`, `retail.txt`, `T10I4D100K.txt` từ bộ dữ liệu Hugging Face ở Mục 2 và đặt vào `data/benchmark/` (tạo thư mục nếu cần). Script `run_benchmarks.jl` **không tự tải** dữ liệu; sẽ báo lỗi nếu thiếu file. Notebook Colab Chương 2 có cell tự chuẩn bị dữ liệu. Kết quả được lưu trong `results/logs/` và biểu đồ liên quan trong `results/figures/`.
-
-### Chạy hai ứng dụng Chương 3
-
-```powershell
-julia --project=. src/applications/run_market_basket.jl --minsup 0.01 --minconf 0.15 --algo optimized
-julia --project=. src/applications/run_visual_words.jl --minsup 0.12 --words 16 --seed 42 --algo optimized
-```
-
-Kết quả được tạo tại `results/chapter3/` và `results/figures/`. Có thể dùng `--algo baseline` để đối chiếu với bản Optimized.
-
-## 5. Chạy Google Colab (Julia Runtime)
-
-1. Mở notebook từ liên kết ở Mục 2 và chọn **Runtime → Change runtime type → Julia** (CPU là đủ).
-2. Chạy **Runtime → Run all**. Các notebook thiết lập mã nguồn bằng cách clone repository `Thanhtung46/18` từ nhánh `main` và tải dữ liệu cần thiết nếu chưa có.
-3. **Các notebook Chương 3 đã đồng nhất cách chạy kiểm thử:** `02`, `03`, `04` trên Colab và `02`, `03`, `04` trên máy local đều chạy test trong tiến trình Julia riêng, tránh xung đột tên khi nạp module; notebook `04` là lựa chọn phù hợp để demo cả hai ứng dụng:
-
-   ```julia
-   cd(ROOT_DIR) do
-       run(`$(Base.julia_cmd()) --project=. tests/test_ch3_julia.jl`)
-   end
-   ```
-
-4. Nếu notebook đã mở trên Colab trước khi cập nhật GitHub, hãy làm mới phiên Julia và mở lại notebook từ nhánh `main` để lấy mã mới. Trong cả năm notebook vừa sửa, cell test được giữ trạng thái chưa chạy cho đến khi bạn **Run all**.
-5. Kiểm tra đầu ra ứng dụng và ảnh mẫu gồm các lớp `0`, `1`, `3`, `8`; lưu bản sao notebook vào Google Drive khi cần nộp.
-
-Notebook Colab Chương 2 (`01`) và bộ 4 notebook local cũng được cung cấp trong `notebooks/`.
-
-## 6. Kết quả đã kiểm chứng
-
-### Kiểm thử
-
-| Phần | Kết quả | Bằng chứng |
-| --- | --- | --- |
-| Chương 1–2 (tự động + SPMF) | **39/39 PASS** | PowerShell trên Windows; 5 bộ test SPMF đều MATCH 100% cho Baseline/Optimized |
-| Chương 3 (tích hợp) | **27/27 PASS** | Google Colab Julia Runtime |
-| **Tổng** | **66/66 PASS** | Hai bộ test độc lập |
-
-### Ứng dụng Chương 3
-
-| Ứng dụng | Dữ liệu/cấu hình | Kết quả |
-| --- | --- | --- |
-| Market Basket Analysis | Groceries: 9.835 giao dịch, 169 sản phẩm; `minsup=0.01`, `minconf=0.15` | **333** frequent itemsets, **322** association rules, Support cross-check **PASS**, Lift cao nhất khoảng **3,37** |
-| Bag of Visual Words | 448 ảnh train, 152 ảnh test; 4 lớp `0,1,3,8`; `K=16`, seed 42, `minsup=0.12` | **154** frequent itemsets, **60** selected patterns, Support cross-check **PASS**, enrichment tối đa **4,00** |
-
-Mô hình phân loại Nearest-Centroid trên tập ảnh test đạt **79,61%** khi chỉ dùng visual words và **78,95%** khi bổ sung 60 FIM patterns. Việc thêm FIM patterns **không cải thiện độ chính xác** trong thực nghiệm này. BoVW dùng dense-gradient descriptors tự cài trên ảnh 8×8, **không phải SIFT/ORB**.
-
-## 7. Đối chứng thời gian SPMF – Baseline – Optimized (Chương 2)
-
-Đã chạy **đầy đủ 30/30 cấu hình** (5 dataset × 6 ngưỡng MinSup), tất cả **MATCH 100%** về frequent itemsets và support. Ba phiên bản đo với cùng dữ liệu và MinSup trên cùng máy Windows (CPU Intel Alder Lake, Julia 1.13.4, OpenJDK 25.0.5.1, 1 luồng Julia).
-
-Phương pháp đo là **CLI end-to-end wall-clock**: mỗi cấu hình có một lần chạy thử và ba lần đo, lấy trung vị. Bao gồm khởi động chương trình/JIT, đọc dữ liệu, khai thác và ghi kết quả; **không** so sánh trực tiếp với thời gian chỉ tính lõi thuật toán trong Chương 2.
-
-| Dataset | Khoảng MinSup | SPMF (s) | Baseline (s) | Optimized (s) | Khớp |
-| --- | ---: | ---: | ---: | ---: | --- |
-| Chess | 90–65% | 0.734 | 6.847 | 6.966 | 6/6 |
-| Mushroom | 40–15% | 0.840 | 9.415 | 9.581 | 6/6 |
-| Accidents | 75–50% | 4.449 | 16.444 | 16.601 | 6/6 |
-| Retail | 5–0.3% | 1.357 | 11.444 | 11.978 | 6/6 |
-| T10I4D100K | 4–0.7% | 3.745 | 12.994 | 11.556 | 6/6 |
-
-*Các thời gian trong bảng là trung vị của sáu giá trị trung vị theo từng mức MinSup*, không phải một cấu hình đại diện. **SPMF nhanh nhất ở 30/30 cấu hình CLI**; bản Optimized nhanh hơn Baseline ở 15/30 trường hợp. Không suy ra tốc độ của phần lõi thuật toán chỉ từ phép đo CLI.
-
-- Dữ liệu gốc: [`results/spmf_comparison/spmf_cli_comparison.csv`](results/spmf_comparison/spmf_cli_comparison.csv) (30 dòng).
-- Môi trường đo: [`results/spmf_comparison/benchmark_environment.txt`](results/spmf_comparison/benchmark_environment.txt).
-- Biểu đồ tổng hợp: [`results/spmf_comparison/spmf_cli_comparison.svg`](results/spmf_comparison/spmf_cli_comparison.svg).
-- Biểu đồ riêng 5 dataset: `results/spmf_comparison/runtime_*.svg`.
-- Script thực hiện: [`scripts/compare_spmf_cli.jl`](scripts/compare_spmf_cli.jl) (**đã có trong repository**).
-
-```powershell
-# Cần Java và spmf/spmf.jar tương thích; script tự tải 5 dataset nếu thiếu
+# So sánh CLI với SPMF: 5 bộ dữ liệu × 6 MinSup = 30 cấu hình
+# Yêu cầu Java tương thích và file spmf/spmf.jar
 julia --project=. scripts/compare_spmf_cli.jl --full
 ```
+Script `compare_spmf_cli.jl` có thể tự tải 5 bộ dữ liệu còn thiếu; kết quả lưu ở `results/spmf_comparison/`. Phép đo này tính **toàn bộ thời gian CLI** (khởi động, đọc dữ liệu, khai thác và xuất kết quả), khác với thời gian riêng thuật toán trong các thực nghiệm Julia.
 
-## 8. Báo cáo IEEE và lưu ý trước khi nộp
+### Bước 5: Chạy 2 ứng dụng thực tế thuần Julia (Chương 3)
+- **Google Colab:** Mở [notebooks/colab/04_ch3_all_applications.ipynb](notebooks/colab/04_ch3_all_applications.ipynb) (hoặc từng notebook `02` / `03`) $\rightarrow$ chọn **Julia Runtime** $\rightarrow$ **Run all**.
+- **Local Notebook:** Mở [notebooks/local/04_ch3_all_applications.ipynb](notebooks/local/04_ch3_all_applications.ipynb) (hoặc `02` / `03`) bằng **Julia Kernel** $\rightarrow$ **Run All**.
+- **Local CLI:**
+```bash
+# Ứng dụng 1: Phân tích giỏ hàng Groceries (mặc định minsup=0.01, minconf=0.15)
+julia --project=. src/applications/run_market_basket.jl --minsup 0.01 --minconf 0.15 --algo optimized
 
-- [`docs/Report.pdf`](docs/Report.pdf) là **bản báo cáo đã biên dịch 12 trang**, có bảng và đồ thị so sánh SPMF – Baseline – Optimized theo 6 mức MinSup trên 5 dataset.
-- **Hình 10 – Ảnh mẫu UCI Digits:** báo cáo đã sử dụng ảnh minh họa 12 mẫu, mỗi lớp `0`, `1`, `3`, `8` có 3 ảnh. Dữ liệu hình SVG do Julia xuất nằm tại [`results/figures/ch3_digits_samples.svg`](results/figures/ch3_digits_samples.svg); bản xuất theo ứng dụng nằm trong `results/chapter3/visual_words/`.
-- Các kết quả và biểu đồ gốc cho Chương 2 nằm tại `results/logs/`, `results/figures/` và `results/spmf_comparison/`. Chúng **không** nằm trong `docs/benchmark_data/` hay `docs/figures/` của ZIP này.
-- **ZIP chỉ có `docs/Report.pdf`, chưa có `docs/Report.tex` và thư mục hình LaTeX.** Nếu cần chỉnh sửa hoặc biên dịch lại báo cáo, phải đưa nguồn `.tex` và các hình phụ thuộc vào repository từ bản tài liệu riêng; không thể biên dịch lại chỉ từ ZIP này.
-- Xác nhận yêu cầu số trang của giảng viên theo **số trang nội dung chính**, vì tổng 12 trang PDF có thể bao gồm tài liệu tham khảo.
-- Đã loại bỏ 6 file PNG/JSON đầu ra từ pipeline cũ không còn được code Julia sử dụng (`top10_lift.png`, `top_products.png`, `item_mapping.json`, `summary.json`, `enriched_patterns.png`, `sample_digits.png` trong `results/chapter3/`). Biểu đồ SVG, CSV và kết quả hiện tại vẫn được giữ lại.
-- Bản ZIP nộp **không chứa `.git/`**. Nếu cập nhật repository đang làm việc, giữ nguyên thư mục `.git/` trên máy và chỉ thay các file mã nguồn/tài liệu; xem thay đổi bằng `git status` trước khi commit.
-- `.gitignore` **không còn bỏ qua `docs/`**, vì vậy có thể thêm `docs/Report.tex` và ảnh báo cáo vào Git khi có nguồn; chỉ các file LaTeX biên dịch tạm như `.aux`, `.log`, `.synctex.gz` bị bỏ qua. `Manifest.toml` vẫn bị bỏ qua theo cấu hình dự án.
+# Ứng dụng 2: Bag of Visual Words trên UCI Digits 8x8 (mặc định minsup=0.12, words=16, seed=42)
+julia --project=. src/applications/run_visual_words.jl --minsup 0.12 --words 16 --seed 42 --algo optimized
+```
+*(Đổi `--algo optimized` thành `--algo baseline` nếu muốn đối chứng hai phiên bản. Mặc định trong hai CLI ứng dụng là `baseline`; các lệnh trên chọn rõ `optimized` để tái lập kết quả đã báo cáo.)*
 
-## 9. Tài liệu tham khảo
+---
 
-1. N. Aryabarzan, B. Minaei-Bidgoli, M. Teshnehlab, “negFIN: An efficient algorithm for fast mining frequent itemsets,” *Expert Systems with Applications*, vol. 105, pp. 129–143, 2018.
-2. P. Fournier-Viger et al., SPMF Open-Source Data Mining Library, <https://www.philippe-fournier-viger.com/spmf/>.
-3. M. Hahsler et al., Groceries dataset (R `arules`), <https://michael.hahsler.net/arules/reference/Groceries.html>.
-4. UCI Machine Learning Repository, Optical Recognition of Handwritten Digits, <https://archive.ics.uci.edu/dataset/80/optical+recognition+of+handwritten+digits>.
+## 5. Kết quả kiểm thử đã xác nhận (66/66 PASS)
 
-Chi tiết trích dẫn học thuật xem trong `docs/Report.pdf`.
+### Bộ test lõi `negFIN` + đối chiếu 100% SPMF (`tests/runtests.jl`)
+```text
+--- ĐỐI CHIẾU 100% VỚI SPMF (spmf.jar / negFIN) ---
+  [SPMF] Paper Example 1 (40.0%):        Base=MATCH 100% (12 itemsets)  | Opt=MATCH 100% (12 itemsets)
+  [SPMF] Identical-Promo (8 items, 50%): Base=MATCH 100% (255 itemsets) | Opt=MATCH 100% (255 itemsets)
+  [SPMF] Non-Contiguous IDs (35.0%):     Base=MATCH 100% (12 itemsets)  | Opt=MATCH 100% (12 itemsets)
+  [SPMF] Synthetic Dense-40 (15.0%):     Base=MATCH 100% (43 itemsets)  | Opt=MATCH 100% (43 itemsets)
+  [SPMF] Synthetic Sparse-120 (8.0%):    Base=MATCH 100% (77 itemsets)  | Opt=MATCH 100% (77 itemsets)
+
+--- ĐỐI CHỨNG HIỆU NĂNG: BASELINE vs. OPTIMIZED ---
+Dataset                      | Base (ms) |  Opt (ms) | Speedup |  Base (MB) |   Opt (MB)
+--------------------------------------------------------------------------------------
+Dense-64 (UInt64)            |     11.63 |      3.00 |   3.88x |      33.61 |      11.35
+Dense-120 (UInt128)          |     48.35 |      4.62 |  10.46x |      86.00 |      24.89
+Sparse-400 (Vector{UInt64})  |      3.64 |      2.27 |   1.61x |      13.33 |       3.39
+--------------------------------------------------------------------------------------
+NegFIN Test Suite            |   39 / 39 PASS
+```
+
+### Bộ test ứng dụng Chương 3 (`tests/test_ch3_julia.jl`)
+```text
+Chapter 3 Julia applications |   27 / 27 PASS
+```
+
+### Benchmark SPMF đầy đủ (`scripts/compare_spmf_cli.jl --full`)
+- **5 bộ dữ liệu**, mỗi bộ **6 mức MinSup** → **30/30 `MATCH_100%`** giữa SPMF và hai bản negFIN Julia (đối chiếu frequent itemsets và support).
+- **1 lần warm-up, 3 lần đo, lấy trung vị** (*median*) trên môi trường Windows x86_64, Julia 1.13.4, Java 25, 1 Julia thread.
+- SPMF có thời gian CLI thấp nhất ở 30/30 cấu hình; Julia Optimized nhanh hơn Baseline ở 15/30 cấu hình CLI. Vì phép đo bao gồm khởi động Julia/JVM và I/O, **không được dùng riêng kết quả này để kết luận về tốc độ lõi thuật toán**.
+- Dữ liệu: [`results/spmf_comparison/spmf_cli_comparison.csv`](results/spmf_comparison/spmf_cli_comparison.csv); biểu đồ: [`spmf_cli_comparison.svg`](results/spmf_comparison/spmf_cli_comparison.svg) và 5 đồ thị từng dataset; môi trường đo: [`benchmark_environment.txt`](results/spmf_comparison/benchmark_environment.txt).
+- Báo cáo mới nhất: [`docs/Report.pdf`](docs/Report.pdf) — **12 trang**, có các biểu đồ SPMF và hình mẫu chữ số đủ các lớp `0, 1, 3, 8` (Hình 10).
+
+---
+
+## 6. Tóm tắt hai ứng dụng Chương 3 (100% Pure Julia)
+
+Cả hai ứng dụng gọi trực tiếp `negfin_optimized` / `negfin_baseline` qua module `Applications` (`src/applications/applications.jl`), **không sử dụng Python hay thư viện FIM bên ngoài**, và kiểm chứng chéo 100% bằng `validate_support`:
+
+| Ứng dụng | Dữ liệu & Pipeline | Kết quả tiêu biểu | Biểu đồ & Log đầu ra |
+| :--- | :--- | :--- | :--- |
+| **1. Market Basket Analysis** | `Groceries` (9,835 giao dịch, 169 sản phẩm; tự tải vào `data/chapter3/groceries.csv`) $\rightarrow$ `negFIN` (`minsup=0.01`) $\rightarrow$ sinh luật (`minconf=0.15`) & xếp hạng `Lift` | **333** tập phổ biến, **322** luật kết hợp (`support PASS`). Top Lift: `curd => whole milk + yogurt` (`Lift = 3.37`, `Conf ≈ 18.9%`) | `results/figures/ch3_top10_lift.svg`, `results/chapter3/market_basket/{summary.txt, top10_lift.csv, association_rules.csv}` |
+| **2. Bag of Visual Words** | `UCI Digits 8×8` (`data/chapter3/digits8x8.csv`, 448 train / 152 test, 4 lớp `0,1,3,8`) $\rightarrow$ 9 dense gradient patches 6D/ảnh $\rightarrow$ K-means (`K=16`, `seed=42`, chỉ fit trên train) $\rightarrow$ `negFIN` (`minsup=0.12`) $\rightarrow$ Enrichment & *Nearest-Centroid* | **154** tập phổ biến, **60** tổ hợp từ thị giác (`support PASS`); *Enrichment* tối đa **4.00×** (lớp `0`); *Nearest-Centroid* accuracy: **79.61%** (words) vs. **78.95%** (+FIM patterns) | `results/figures/ch3_enriched_patterns.svg`, `results/figures/ch3_digits_samples.svg`, `results/chapter3/visual_words/{summary.txt, patterns_by_class.csv, test_accuracy_comparison.csv}` |
+
+**Lưu ý phương pháp:**
+- Chỉ số `Lift > 1` ở Ứng dụng 1 phản ánh **tương quan thống kê dương**, không chứng minh quan hệ nhân quả.
+- Ứng dụng 2 sử dụng **dense gradient descriptors tự cài** trên ảnh 8×8 (không phải SIFT/ORB hay tập ảnh độ phân giải cao như Caltech-101/CIFAR).
+- Kết quả phân loại khi bổ sung FIM patterns là **78.95%**, thấp hơn baseline visual words **79.61%**; dự án không tuyên bố FIM luôn làm tăng độ chính xác.
