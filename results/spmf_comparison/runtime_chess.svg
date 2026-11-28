@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560">
+<rect width="100%" height="100%" fill="white"/>
+<text x="70" y="35" font-family="Arial" font-size="22" font-weight="bold">Chess: Runtime vs MinSup (CLI)</text>
+<line x1="90" y1="85" x2="90" y2="490" stroke="#555"/>
+<line x1="90" y1="490" x2="920" y2="490" stroke="#555"/>
+<line x1="90" y1="490.0" x2="920" y2="490.0" stroke="#eee"/>
+<text x="82" y="494.0" font-family="Arial" font-size="11" text-anchor="end">0.00</text>
+<line x1="90" y1="388.75" x2="920" y2="388.75" stroke="#eee"/>
+<text x="82" y="392.75" font-family="Arial" font-size="11" text-anchor="end">2.76</text>
+<line x1="90" y1="287.5" x2="920" y2="287.5" stroke="#eee"/>
+<text x="82" y="291.5" font-family="Arial" font-size="11" text-anchor="end">5.52</text>
+<line x1="90" y1="186.25" x2="920" y2="186.25" stroke="#eee"/>
+<text x="82" y="190.25" font-family="Arial" font-size="11" text-anchor="end">8.29</text>
+<line x1="90" y1="85.0" x2="920" y2="85.0" stroke="#eee"/>
+<text x="82" y="89.0" font-family="Arial" font-size="11" text-anchor="end">11.05</text>
+<text x="90.0" y="510" font-family="Arial" font-size="11" text-anchor="middle">65.0</text>
+<text x="255.99999999999977" y="510" font-family="Arial" font-size="11" text-anchor="middle">70.0</text>
+<text x="421.99999999999994" y="510" font-family="Arial" font-size="11" text-anchor="middle">75.0</text>
+<text x="588.0" y="510" font-family="Arial" font-size="11" text-anchor="middle">80.0</text>
+<text x="753.9999999999999" y="510" font-family="Arial" font-size="11" text-anchor="middle">85.0</text>
+<text x="920.0" y="510" font-family="Arial" font-size="11" text-anchor="middle">90.0</text>
+<polyline fill="none" stroke="#627B9D" stroke-width="3" points="90.0,458.6 256.0,461.2 422.0,461.5 588.0,464.7 754.0,464.6 920.0,464.7"/>
+<circle cx="90.0" cy="458.5909163235891" r="4" fill="#627B9D"/>
+<circle cx="255.99999999999977" cy="461.1640582549779" r="4" fill="#627B9D"/>
+<circle cx="421.99999999999994" cy="461.5343511530518" r="4" fill="#627B9D"/>
+<circle cx="588.0" cy="464.66320370302867" r="4" fill="#627B9D"/>
+<circle cx="753.9999999999999" cy="464.6479831736579" r="4" fill="#627B9D"/>
+<circle cx="920.0" cy="464.670135789021" r="4" fill="#627B9D"/>
+<line x1="110" y1="50" x2="134" y2="50" stroke="#627B9D" stroke-width="3"/>
+<text x="142" y="54" font-family="Arial" font-size="13">SPMF</text>
+<polyline fill="none" stroke="#C68A5B" stroke-width="3" points="90.0,234.5 256.0,239.7 422.0,131.6 588.0,245.3 754.0,238.3 920.0,241.6"/>
+<circle cx="90.0" cy="234.47332093365202" r="4" fill="#C68A5B"/>
+<circle cx="255.99999999999977" cy="239.65622644585494" r="4" fill="#C68A5B"/>
+<circle cx="421.99999999999994" cy="131.59292035398227" r="4" fill="#C68A5B"/>
+<circle cx="588.0" cy="245.29844589063097" r="4" fill="#C68A5B"/>
+<circle cx="753.9999999999999" cy="238.30961650375522" r="4" fill="#C68A5B"/>
+<circle cx="920.0" cy="241.59873550931064" r="4" fill="#C68A5B"/>
+<line x1="340" y1="50" x2="364" y2="50" stroke="#C68A5B" stroke-width="3"/>
+<text x="372" y="54" font-family="Arial" font-size="13">Baseline</text>
+<polyline fill="none" stroke="#498977" stroke-width="3" points="90.0,227.4 256.0,232.1 422.0,144.6 588.0,243.4 754.0,237.2 920.0,241.8"/>
+<circle cx="90.0" cy="227.4121207156495" r="4" fill="#498977"/>
+<circle cx="255.99999999999977" cy="232.09755832859076" r="4" fill="#498977"/>
+<circle cx="421.99999999999994" cy="144.58882932250197" r="4" fill="#498977"/>
+<circle cx="588.0" cy="243.381443677696" r="4" fill="#498977"/>
+<circle cx="753.9999999999999" cy="237.17577504556942" r="4" fill="#498977"/>
+<circle cx="920.0" cy="241.8302693809531" r="4" fill="#498977"/>
+<line x1="570" y1="50" x2="594" y2="50" stroke="#498977" stroke-width="3"/>
+<text x="602" y="54" font-family="Arial" font-size="13">Optimized</text>
+<text x="510" y="540" font-family="Arial" font-size="13" text-anchor="middle">Minimum Support (%)</text>
+<text x="25" y="300" font-family="Arial" font-size="13" transform="rotate(-90 25 300)" text-anchor="middle">Wall-clock (seconds)</text>
+</svg>

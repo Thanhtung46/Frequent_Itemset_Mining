@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="560" viewBox="0 0 1000 560">
+<rect width="100%" height="100%" fill="white"/>
+<text x="70" y="35" font-family="Arial" font-size="22" font-weight="bold">Retail: Runtime vs MinSup (CLI)</text>
+<line x1="90" y1="85" x2="90" y2="490" stroke="#555"/>
+<line x1="90" y1="490" x2="920" y2="490" stroke="#555"/>
+<line x1="90" y1="490.0" x2="920" y2="490.0" stroke="#eee"/>
+<text x="82" y="494.0" font-family="Arial" font-size="11" text-anchor="end">0.00</text>
+<line x1="90" y1="388.75" x2="920" y2="388.75" stroke="#eee"/>
+<text x="82" y="392.75" font-family="Arial" font-size="11" text-anchor="end">3.94</text>
+<line x1="90" y1="287.5" x2="920" y2="287.5" stroke="#eee"/>
+<text x="82" y="291.5" font-family="Arial" font-size="11" text-anchor="end">7.88</text>
+<line x1="90" y1="186.24999999999994" x2="920" y2="186.24999999999994" stroke="#eee"/>
+<text x="82" y="190.24999999999994" font-family="Arial" font-size="11" text-anchor="end">11.82</text>
+<line x1="90" y1="85.0" x2="920" y2="85.0" stroke="#eee"/>
+<text x="82" y="89.0" font-family="Arial" font-size="11" text-anchor="end">15.76</text>
+<text x="90.0" y="510" font-family="Arial" font-size="11" text-anchor="middle">0.3</text>
+<text x="125.31914893617022" y="510" font-family="Arial" font-size="11" text-anchor="middle">0.5</text>
+<text x="213.61702127659572" y="510" font-family="Arial" font-size="11" text-anchor="middle">1.0</text>
+<text x="390.21276595744683" y="510" font-family="Arial" font-size="11" text-anchor="middle">2.0</text>
+<text x="566.8085106382978" y="510" font-family="Arial" font-size="11" text-anchor="middle">3.0</text>
+<text x="920.0" y="510" font-family="Arial" font-size="11" text-anchor="middle">5.0</text>
+<polyline fill="none" stroke="#627B9D" stroke-width="3" points="90.0,386.4 125.3,424.8 213.6,454.7 390.2,456.4 566.8,458.3 920.0,455.6"/>
+<circle cx="90.0" cy="386.3778716102226" r="4" fill="#627B9D"/>
+<circle cx="125.31914893617022" cy="424.75463872819205" r="4" fill="#627B9D"/>
+<circle cx="213.61702127659572" cy="454.6799586930495" r="4" fill="#627B9D"/>
+<circle cx="390.21276595744683" cy="456.3655564560253" r="4" fill="#627B9D"/>
+<circle cx="566.8085106382978" cy="458.3271006549989" r="4" fill="#627B9D"/>
+<circle cx="920.0" cy="455.57674670354737" r="4" fill="#627B9D"/>
+<line x1="110" y1="50" x2="134" y2="50" stroke="#627B9D" stroke-width="3"/>
+<text x="142" y="54" font-family="Arial" font-size="13">SPMF</text>
+<polyline fill="none" stroke="#C68A5B" stroke-width="3" points="90.0,131.6 125.3,170.0 213.6,205.9 390.2,185.8 566.8,267.2 920.0,223.8"/>
+<circle cx="90.0" cy="131.59292035398227" r="4" fill="#C68A5B"/>
+<circle cx="125.31914893617022" cy="169.95506198960237" r="4" fill="#C68A5B"/>
+<circle cx="213.61702127659572" cy="205.94488408391152" r="4" fill="#C68A5B"/>
+<circle cx="390.21276595744683" cy="185.8325483344197" r="4" fill="#C68A5B"/>
+<circle cx="566.8085106382978" cy="267.18280151362603" r="4" fill="#C68A5B"/>
+<circle cx="920.0" cy="223.8239772958354" r="4" fill="#C68A5B"/>
+<line x1="340" y1="50" x2="364" y2="50" stroke="#C68A5B" stroke-width="3"/>
+<text x="372" y="54" font-family="Arial" font-size="13">Baseline</text>
+<polyline fill="none" stroke="#498977" stroke-width="3" points="90.0,142.3 125.3,162.5 213.6,195.0 390.2,203.3 566.8,169.3 920.0,208.7"/>
+<circle cx="90.0" cy="142.31060283018337" r="4" fill="#498977"/>
+<circle cx="125.31914893617022" cy="162.51004899080056" r="4" fill="#498977"/>
+<circle cx="213.61702127659572" cy="195.00494875855588" r="4" fill="#498977"/>
+<circle cx="390.21276595744683" cy="203.34774176156247" r="4" fill="#498977"/>
+<circle cx="566.8085106382978" cy="169.3255083460171" r="4" fill="#498977"/>
+<circle cx="920.0" cy="208.70869162877358" r="4" fill="#498977"/>
+<line x1="570" y1="50" x2="594" y2="50" stroke="#498977" stroke-width="3"/>
+<text x="602" y="54" font-family="Arial" font-size="13">Optimized</text>
+<text x="510" y="540" font-family="Arial" font-size="13" text-anchor="middle">Minimum Support (%)</text>
+<text x="25" y="300" font-family="Arial" font-size="13" transform="rotate(-90 25 300)" text-anchor="middle">Wall-clock (seconds)</text>
+</svg>
