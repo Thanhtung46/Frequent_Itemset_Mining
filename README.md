@@ -50,7 +50,7 @@ Toàn bộ notebook trong `notebooks/colab/` đều chạy trực tiếp bằng 
 | `spmf/` | Đối chiếu | Thư mục cần tự tạo để đặt `spmf.jar` tương thích Java; không đóng gói JAR |
 
 ```text
-datamining/
+18/
 ├── .gitignore                    # Bỏ qua dữ liệu tải về, JAR & file LaTeX tạm
 ├── README.md                     # Tổng quan, hướng dẫn cài đặt & kết quả kiểm thử
 ├── Project.toml                  # Khai báo môi trường & thư viện Julia
