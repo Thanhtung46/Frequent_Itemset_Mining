@@ -2,7 +2,7 @@
 
 Cài đặt thuật toán **negFIN** từ bài báo gốc, tối ưu hóa bằng **Julia**, đánh giá trên dữ liệu benchmark và triển khai hai ứng dụng thực tế. Repo bao gồm mã nguồn, bộ kiểm thử, Jupyter Notebook và báo cáo IEEE hai cột.
 
-> **Kết quả đã xác nhận:** **66/66 bài kiểm thử PASS** (39/39 Chương 1–2, 27/27 Chương 3); **30/30 cấu hình benchmark CLI khớp SPMF 100%**. Báo cáo IEEE đã bổ sung các đường thời gian theo MinSup và hình minh họa đủ 4 lớp chữ số. Các số liệu được tái lập theo môi trường và tham số ghi bên dưới.
+> **Kết quả đã ghi nhận:** **66/66 kiểm thử PASS** (39/39 Chương 1–2; 27/27 Chương 3) từ các lần chạy trước; CSV trong repository có **30/30 cấu hình đối chiếu SPMF MATCH 100%**. `docs/Report.pdf` gồm 12 trang, có đồ thị thời gian theo MinSup và hình chữ số đủ 4 lớp. Các phép thử không được chạy lại khi sửa README.
 
 ## 1. Thành viên và phân công
 
@@ -27,12 +27,12 @@ Cài đặt thuật toán **negFIN** từ bài báo gốc, tối ưu hóa bằng
 
 **Nguồn dữ liệu:** Chương 2 sử dụng Chess, Mushroom, Accidents, Retail và T10I4D100K; Chương 3 sử dụng Groceries (gói R `arules`) và UCI Optical Recognition of Handwritten Digits (ảnh 8×8). Dữ liệu được mirror trên Hugging Face để thuận tiện khi chạy notebook.
 
-## 3. Cấu trúc dự án
+## 3. Cấu trúc dự án (đúng với ZIP hiện tại)
 
 ```text
-datamining/                         # Có thể mang tên 18/ khi clone từ GitHub
+datamining/
+├── .gitignore
 ├── Project.toml
-├── Manifest.toml
 ├── README.md
 ├── src/
 │   ├── algorithm/
@@ -49,34 +49,41 @@ datamining/                         # Có thể mang tên 18/ khi clone từ Git
 │   ├── structures.jl
 │   └── utils.jl
 ├── tests/
-│   ├── runtests.jl                 # Chương 1–2 + đối chiếu SPMF
+│   ├── runtests.jl
 │   ├── test_correctness.jl
 │   ├── test_benchmark.jl
-│   └── test_ch3_julia.jl          # Chương 3
+│   └── test_ch3_julia.jl
 ├── scripts/
-│   ├── run_benchmarks.jl          # 6 nhóm thực nghiệm Chương 2
-│   └── compare_spmf_cli.jl       # Script benchmark CLI riêng; cần ghép vào repo trước khi chạy
+│   ├── run_benchmarks.jl
+│   └── compare_spmf_cli.jl
 ├── notebooks/
-│   ├── colab/                     # 01, 02, 03, 04
-│   └── local/                     # 01, 02, 03, 04
+│   ├── colab/                         # 01, 02, 03, 04 (.ipynb)
+│   └── local/                         # 01, 02, 03, 04 (.ipynb)
 ├── data/
 │   ├── toy/
-│   ├── benchmark/                 # Dữ liệu lớn: tải khi cần
-│   └── chapter3/                  # groceries.csv, digits8x8.csv
-├── results/
-│   ├── logs/
-│   ├── figures/
+│   │   └── paper_example1.txt
 │   └── chapter3/
-├── docs/
-│   ├── Report.tex                 # Khi đã ghép thư mục docs nguồn LaTeX
-│   ├── Report.pdf
-│   ├── figures/
-│   └── benchmark_data/           # CSV + mô tả môi trường so sánh SPMF
-└── spmf/
-    └── spmf.jar                  # Tải riêng; không bắt buộc có trong GitHub
+│       └── digits8x8.csv
+├── results/
+│   ├── logs/                          # CSV của 6 nhóm thực nghiệm Chương 2
+│   ├── figures/                       # Hình Chương 2 và 3 (.png, .svg)
+│   ├── spmf_comparison/               # CSV + 6 SVG + môi trường benchmark SPMF
+│   └── chapter3/
+│       ├── market_basket/             # Bảng, dữ liệu, SVG và kết quả chạy
+│       └── visual_words/             # Bảng, dữ liệu, SVG và kết quả chạy
+└── docs/
+    └── Report.pdf                     # Báo cáo đã biên dịch, 12 trang
 ```
 
-**Lưu ý khi ghép bản mới:** `docs/benchmark_data/`, `docs/figures/runtime_*.svg` và `docs/Report.tex` nằm trong gói tài liệu đã cập nhật. Script `scripts/compare_spmf_cli.jl` được cung cấp ở gói benchmark riêng, **không nằm trong gói chỉ chứa `docs/` và README**. Chỉ dùng lệnh benchmark ở Mục 7 sau khi đã sao chép script vào đúng vị trí. `spmf/spmf.jar` cần tải riêng theo hướng dẫn.
+**Các thành phần không có sẵn trong ZIP:**
+
+- `Manifest.toml`: không có trong repository; Julia có thể tạo sau `Pkg.instantiate()` và hiện được `.gitignore` bỏ qua.
+- `data/benchmark/`: chưa đóng gói 5 tập dữ liệu lớn. Cần tải vào thư mục này trước khi chạy `scripts/run_benchmarks.jl`. Script `scripts/compare_spmf_cli.jl` có chức năng tự tải dữ liệu còn thiếu từ Hugging Face.
+- `data/chapter3/groceries.csv`: được ứng dụng Market Basket tải tự động khi cần (nếu truy cập mạng thành công).
+- `spmf/spmf.jar`: cần tự tạo thư mục `spmf/` và chép JAR tương thích vào khi muốn chạy các phép đối chiếu trực tiếp.
+- `docs/Report.tex`, `docs/figures/` và `docs/benchmark_data/`: **không nằm trong ZIP này**. Mã nguồn LaTeX và bộ hình phục vụ biên dịch báo cáo cần được bổ sung riêng nếu giảng viên yêu cầu; hình và CSV dùng để tham khảo đang có ở `results/`.
+
+`compare_spmf_cli.jl` **đã nằm sẵn** trong `scripts/`, không cần chép thêm từ gói benchmark khác.
 
 ## 4. Cài đặt và chạy trên máy cá nhân
 
@@ -94,12 +101,12 @@ julia --version
 julia --project=. -e "using Pkg; Pkg.instantiate()"
 ```
 
-Nếu `Project.toml` và `Manifest.toml` không đồng bộ (ví dụ thiếu `CSV`), chạy `julia --project=. -e "using Pkg; Pkg.resolve()"` rồi `instantiate()` lại. Kiểm tra thay đổi ở `Manifest.toml` trước khi commit.
+Repository chỉ cung cấp `Project.toml` (đã khai báo CSV, DataFrames, Plots và các Julia standard libraries). `Pkg.instantiate()` sẽ cài gói cần thiết và có thể tạo `Manifest.toml` ở máy bạn; file đó không nằm trong ZIP và đang được `.gitignore` bỏ qua. Nếu việc giải quyết dependency gặp lỗi, có thể thử `julia --project=. -e "using Pkg; Pkg.resolve(); Pkg.instantiate()"`.
 
 ### Kiểm thử Chương 1–2 và SPMF
 
-1. Tải `spmf.jar` và đặt tại `spmf/spmf.jar`.
-2. Kiểm tra Java đang được ưu tiên trên `PATH`:
+1. Tạo thư mục `spmf` nếu chưa tồn tại (`mkdir spmf`), rồi tải `spmf.jar` và đặt tại `spmf/spmf.jar`.
+2. Kiểm tra Java đang được ưu tiên trên `PATH` (ví dụ PowerShell):
 
 ```powershell
 java -version
@@ -120,7 +127,7 @@ julia --project=. tests/runtests.jl
 julia --project=. tests/test_ch3_julia.jl
 ```
 
-**Kết quả đã xác nhận trên Colab:** `Chapter 3 Julia applications | 27 | 27` (`ProcessExited(0)` khi chạy bộ test trong tiến trình Julia riêng).
+**Kết quả ghi nhận trước đó trên Colab:** `Chapter 3 Julia applications | 27 | 27` (`ProcessExited(0)` khi chạy bộ test trong tiến trình Julia riêng).
 
 ### Chạy CLI negFIN (Chương 1)
 
@@ -135,7 +142,7 @@ julia --project=. src/main.jl --input data/toy/paper_example1.txt --output resul
 julia --project=. scripts/run_benchmarks.jl
 ```
 
-Cần có 5 dataset trong `data/benchmark/` hoặc chạy notebook Colab Chương 2 để thiết lập dữ liệu. Kết quả thực nghiệm được lưu trong `results/logs/` và `results/figures/`.
+**Trước khi chạy trên Windows**, hãy tải đủ 5 file `chess.txt`, `mushroom.txt`, `accidents.txt`, `retail.txt`, `T10I4D100K.txt` từ bộ dữ liệu Hugging Face ở Mục 2 và đặt vào `data/benchmark/` (tạo thư mục nếu cần). Script `run_benchmarks.jl` **không tự tải** dữ liệu; sẽ báo lỗi nếu thiếu file. Notebook Colab Chương 2 có cell tự chuẩn bị dữ liệu. Kết quả được lưu trong `results/logs/` và biểu đồ liên quan trong `results/figures/`.
 
 ### Chạy hai ứng dụng Chương 3
 
@@ -148,9 +155,9 @@ Kết quả được tạo tại `results/chapter3/` và `results/figures/`. Có
 
 ## 5. Chạy Google Colab (Julia Runtime)
 
-1. Mở notebook từ các liên kết ở Mục 2. Chọn **Runtime → Change runtime type → Julia** (CPU là đủ).
-2. Nếu Colab tự chuyển về Python 3 khi mở từ GitHub, tạo bản sao vào Drive và chọn lại Julia; xác nhận runtime hiện `Julia` trước khi chạy.
-3. Chọn **Runtime → Run all**. Với notebook demo Chương 3, cell chạy kiểm thử nên gọi Julia trong tiến trình riêng để tránh nhập trùng tên hàm vào `Main`:
+1. Mở notebook từ liên kết ở Mục 2 và chọn **Runtime → Change runtime type → Julia** (CPU là đủ).
+2. Chạy **Runtime → Run all**. Các notebook thiết lập mã nguồn bằng cách clone repository `Thanhtung46/18` từ nhánh `main` và tải dữ liệu cần thiết nếu chưa có.
+3. **Khuyến nghị demo Chương 3 bằng notebook `04_ch3_all_applications.ipynb`**. Notebook này đã sửa cách chạy bộ test sang tiến trình Julia riêng, tránh xung đột tên khi nạp nhiều module:
 
    ```julia
    cd(ROOT_DIR) do
@@ -158,7 +165,10 @@ Kết quả được tạo tại `results/chapter3/` và `results/figures/`. Có
    end
    ```
 
-4. Kiểm tra `27/27 PASS`, hai ứng dụng xuất bảng và biểu đồ (gồm ảnh mẫu `0`, `1`, `3`, `8`), sau đó **Save a copy in Drive** và chia sẻ quyền xem khi nộp.
+4. **Lưu ý đối với notebook `02` và `03`:** Bản trong ZIP còn dùng `include(joinpath(ROOT_DIR, "tests", "test_ch3_julia.jl"))` trong phiên Julia hiện hành; cách này có thể gây xung đột module. Nếu gặp lỗi ở cell kiểm thử, thay cell đó bằng cách chạy tiến trình độc lập như trên rồi chạy lại.
+5. Kiểm tra đầu ra ứng dụng và ảnh mẫu gồm các lớp `0`, `1`, `3`, `8`; lưu bản sao notebook vào Google Drive khi cần nộp.
+
+Notebook Colab Chương 2 (`01`) và bộ 4 notebook local cũng được cung cấp trong `notebooks/`.
 
 ## 6. Kết quả đã kiểm chứng
 
@@ -195,24 +205,26 @@ Phương pháp đo là **CLI end-to-end wall-clock**: mỗi cấu hình có mộ
 
 *Các thời gian trong bảng là trung vị của sáu giá trị trung vị theo từng mức MinSup*, không phải một cấu hình đại diện. **SPMF nhanh nhất ở 30/30 cấu hình CLI**; bản Optimized nhanh hơn Baseline ở 15/30 trường hợp. Không suy ra tốc độ của phần lõi thuật toán chỉ từ phép đo CLI.
 
-- Dữ liệu gốc: `docs/benchmark_data/spmf_cli_comparison.csv` (30 dòng).
-- Thông số môi trường: `docs/benchmark_data/benchmark_environment.txt`.
-- Biểu đồ riêng cho 5 dataset: `docs/figures/runtime_*.svg` (và `.pdf` cho LaTeX).
-- Script thực hiện: `scripts/compare_spmf_cli.jl` (lấy từ gói benchmark riêng và ghép vào repository nếu muốn chạy lại).
+- Dữ liệu gốc: [`results/spmf_comparison/spmf_cli_comparison.csv`](results/spmf_comparison/spmf_cli_comparison.csv) (30 dòng).
+- Môi trường đo: [`results/spmf_comparison/benchmark_environment.txt`](results/spmf_comparison/benchmark_environment.txt).
+- Biểu đồ tổng hợp: [`results/spmf_comparison/spmf_cli_comparison.svg`](results/spmf_comparison/spmf_cli_comparison.svg).
+- Biểu đồ riêng 5 dataset: `results/spmf_comparison/runtime_*.svg`.
+- Script thực hiện: [`scripts/compare_spmf_cli.jl`](scripts/compare_spmf_cli.jl) (**đã có trong repository**).
 
 ```powershell
-# Chỉ chạy lệnh này khi scripts/compare_spmf_cli.jl đã tồn tại
+# Cần Java và spmf/spmf.jar tương thích; script tự tải 5 dataset nếu thiếu
 julia --project=. scripts/compare_spmf_cli.jl --full
 ```
 
 ## 8. Báo cáo IEEE và lưu ý trước khi nộp
 
-- Bản `docs/Report.pdf` trong gói cập nhật có **12 trang PDF** (bao gồm tài liệu tham khảo), đã tích hợp so sánh thời gian CLI trên **30 cấu hình**. Khi ghép vào repository, thay đồng bộ PDF, LaTeX và các hình minh họa.
-- Đã bổ sung phần đối chứng CLI với SPMF vào **Mục III.H – So sánh với SPMF (Java)**: 6 mức MinSup cho mỗi dataset, tổng 30 cấu hình, tất cả MATCH 100%. Biểu đồ thời gian nằm ở **Hình 7–8** của báo cáo mới.
-- **Hình 10 – Ảnh mẫu UCI Digits đã sửa:** `docs/figures/ch3_digits_samples.png` hiện minh họa **12 ảnh, gồm 3 ảnh của mỗi lớp `0`, `1`, `3`, `8`**. Hình đã được thay vào `docs/Report.tex` và biên dịch vào `docs/Report.pdf`; các chỉ số K-means/negFIN và biểu đồ enrichment không thay đổi. (Do đã thêm các hình benchmark SPMF, ảnh mẫu được đánh số **Hình 10**, không còn là Hình 8.)
-- Kiểm tra phần nội dung chính đáp ứng quy định số trang của giảng viên **không tính tài liệu tham khảo/phụ lục**; số trang PDF tổng cộng không đồng nghĩa với số trang nội dung chính.
-- Đối chiếu ảnh mẫu và bảng số liệu sau khi **Run all** notebook Colab; nếu notebook còn dùng bản mã cũ, cập nhật các file trên `main` rồi chạy lại trong runtime mới.
-- Không commit thư mục `.git` từ file ZIP hoặc các kết quả thử nghiệm tạm thời ngoài phạm vi bản nộp.
+- [`docs/Report.pdf`](docs/Report.pdf) là **bản báo cáo đã biên dịch 12 trang**, có bảng và đồ thị so sánh SPMF – Baseline – Optimized theo 6 mức MinSup trên 5 dataset.
+- **Hình 10 – Ảnh mẫu UCI Digits:** báo cáo đã sử dụng ảnh minh họa 12 mẫu, mỗi lớp `0`, `1`, `3`, `8` có 3 ảnh. Dữ liệu hình SVG do Julia xuất nằm tại [`results/figures/ch3_digits_samples.svg`](results/figures/ch3_digits_samples.svg); bản xuất theo ứng dụng nằm trong `results/chapter3/visual_words/`.
+- Các kết quả và biểu đồ gốc cho Chương 2 nằm tại `results/logs/`, `results/figures/` và `results/spmf_comparison/`. Chúng **không** nằm trong `docs/benchmark_data/` hay `docs/figures/` của ZIP này.
+- **ZIP chỉ có `docs/Report.pdf`, chưa có `docs/Report.tex` và thư mục hình LaTeX.** Nếu cần chỉnh sửa hoặc biên dịch lại báo cáo, phải đưa nguồn `.tex` và các hình phụ thuộc vào repository từ bản tài liệu riêng; không thể biên dịch lại chỉ từ ZIP này.
+- Xác nhận yêu cầu số trang của giảng viên theo **số trang nội dung chính**, vì tổng 12 trang PDF có thể bao gồm tài liệu tham khảo.
+- Khi cập nhật GitHub, so sánh với nội dung thực tế trên `main`; không đóng gói `.git/` vào ZIP nộp và tránh đưa các file thử nghiệm tạm thời vào bản nộp.
+- `.gitignore` hiện bỏ qua `docs/` và `Manifest.toml`. Nếu định thêm mới file LaTeX/hình trong `docs/`, cần sửa `.gitignore` hoặc `git add -f` một cách có chủ đích; việc chỉ sửa README **không tự thay đổi cấu hình Git**.
 
 ## 9. Tài liệu tham khảo
 
