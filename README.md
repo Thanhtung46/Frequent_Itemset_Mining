@@ -2,7 +2,7 @@
 
 Cài đặt thuật toán **negFIN** từ bài báo gốc, tối ưu hóa bằng **Julia**, đánh giá trên dữ liệu benchmark và triển khai hai ứng dụng thực tế. Repo bao gồm mã nguồn, bộ kiểm thử, Jupyter Notebook và báo cáo IEEE hai cột.
 
-> **Kết quả đã ghi nhận:** **66/66 kiểm thử PASS** (39/39 Chương 1–2; 27/27 Chương 3) từ các lần chạy trước; CSV trong repository có **30/30 cấu hình đối chiếu SPMF MATCH 100%**. `docs/Report.pdf` gồm 12 trang, có đồ thị thời gian theo MinSup và hình chữ số đủ 4 lớp. Các phép thử không được chạy lại khi sửa README.
+> **Kết quả đã ghi nhận trước khi cập nhật repository:** **66/66 kiểm thử PASS** (39/39 Chương 1–2; 27/27 Chương 3); CSV lưu **30/30 cấu hình đối chiếu SPMF MATCH 100%**. `docs/Report.pdf` gồm 12 trang, có đồ thị thời gian theo MinSup và hình chữ số đủ 4 lớp. Việc sửa notebook và dọn file không thay thế cho một lần chạy lại kiểm thử.
 
 ## 1. Thành viên và phân công
 
@@ -157,7 +157,7 @@ Kết quả được tạo tại `results/chapter3/` và `results/figures/`. Có
 
 1. Mở notebook từ liên kết ở Mục 2 và chọn **Runtime → Change runtime type → Julia** (CPU là đủ).
 2. Chạy **Runtime → Run all**. Các notebook thiết lập mã nguồn bằng cách clone repository `Thanhtung46/18` từ nhánh `main` và tải dữ liệu cần thiết nếu chưa có.
-3. **Khuyến nghị demo Chương 3 bằng notebook `04_ch3_all_applications.ipynb`**. Notebook này đã sửa cách chạy bộ test sang tiến trình Julia riêng, tránh xung đột tên khi nạp nhiều module:
+3. **Các notebook Chương 3 đã đồng nhất cách chạy kiểm thử:** `02`, `03`, `04` trên Colab và `02`, `03`, `04` trên máy local đều chạy test trong tiến trình Julia riêng, tránh xung đột tên khi nạp module; notebook `04` là lựa chọn phù hợp để demo cả hai ứng dụng:
 
    ```julia
    cd(ROOT_DIR) do
@@ -165,7 +165,7 @@ Kết quả được tạo tại `results/chapter3/` và `results/figures/`. Có
    end
    ```
 
-4. **Lưu ý đối với notebook `02` và `03`:** Bản trong ZIP còn dùng `include(joinpath(ROOT_DIR, "tests", "test_ch3_julia.jl"))` trong phiên Julia hiện hành; cách này có thể gây xung đột module. Nếu gặp lỗi ở cell kiểm thử, thay cell đó bằng cách chạy tiến trình độc lập như trên rồi chạy lại.
+4. Nếu notebook đã mở trên Colab trước khi cập nhật GitHub, hãy làm mới phiên Julia và mở lại notebook từ nhánh `main` để lấy mã mới. Trong cả năm notebook vừa sửa, cell test được giữ trạng thái chưa chạy cho đến khi bạn **Run all**.
 5. Kiểm tra đầu ra ứng dụng và ảnh mẫu gồm các lớp `0`, `1`, `3`, `8`; lưu bản sao notebook vào Google Drive khi cần nộp.
 
 Notebook Colab Chương 2 (`01`) và bộ 4 notebook local cũng được cung cấp trong `notebooks/`.
@@ -223,8 +223,9 @@ julia --project=. scripts/compare_spmf_cli.jl --full
 - Các kết quả và biểu đồ gốc cho Chương 2 nằm tại `results/logs/`, `results/figures/` và `results/spmf_comparison/`. Chúng **không** nằm trong `docs/benchmark_data/` hay `docs/figures/` của ZIP này.
 - **ZIP chỉ có `docs/Report.pdf`, chưa có `docs/Report.tex` và thư mục hình LaTeX.** Nếu cần chỉnh sửa hoặc biên dịch lại báo cáo, phải đưa nguồn `.tex` và các hình phụ thuộc vào repository từ bản tài liệu riêng; không thể biên dịch lại chỉ từ ZIP này.
 - Xác nhận yêu cầu số trang của giảng viên theo **số trang nội dung chính**, vì tổng 12 trang PDF có thể bao gồm tài liệu tham khảo.
-- Khi cập nhật GitHub, so sánh với nội dung thực tế trên `main`; không đóng gói `.git/` vào ZIP nộp và tránh đưa các file thử nghiệm tạm thời vào bản nộp.
-- `.gitignore` hiện bỏ qua `docs/` và `Manifest.toml`. Nếu định thêm mới file LaTeX/hình trong `docs/`, cần sửa `.gitignore` hoặc `git add -f` một cách có chủ đích; việc chỉ sửa README **không tự thay đổi cấu hình Git**.
+- Đã loại bỏ 6 file PNG/JSON đầu ra từ pipeline cũ không còn được code Julia sử dụng (`top10_lift.png`, `top_products.png`, `item_mapping.json`, `summary.json`, `enriched_patterns.png`, `sample_digits.png` trong `results/chapter3/`). Biểu đồ SVG, CSV và kết quả hiện tại vẫn được giữ lại.
+- Bản ZIP nộp **không chứa `.git/`**. Nếu cập nhật repository đang làm việc, giữ nguyên thư mục `.git/` trên máy và chỉ thay các file mã nguồn/tài liệu; xem thay đổi bằng `git status` trước khi commit.
+- `.gitignore` **không còn bỏ qua `docs/`**, vì vậy có thể thêm `docs/Report.tex` và ảnh báo cáo vào Git khi có nguồn; chỉ các file LaTeX biên dịch tạm như `.aux`, `.log`, `.synctex.gz` bị bỏ qua. `Manifest.toml` vẫn bị bỏ qua theo cấu hình dự án.
 
 ## 9. Tài liệu tham khảo
 

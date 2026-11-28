@@ -1,21 +1,37 @@
-summary.md
+# Temporary files and editor/OS metadata
 .DS_Store
 *.pyc
 *.log
+
+# External datasets and third-party binaries (download separately)
 spmf/*.jar
 data/benchmark/*.txt
-# Downloaded Ch3 Groceries dataset
 data/chapter3/groceries.csv
 
+# Julia local dependency lockfile (not included in this repository)
+Manifest.toml
 
+# Local working notes and generated agent files
+summary.md
 note.md
-.gitignore
-
-docs
-.agents
-
+.agents/
 CH3_INTEGRATION.md
-
 CH3_MERGE_GUIDE.md
 
-Manifest.toml
+# LaTeX compilation by-products; keep Report.tex, Report.pdf and figures tracked
+docs/**/*.aux
+docs/**/*.bbl
+docs/**/*.bcf
+docs/**/*.blg
+docs/**/*.fdb_latexmk
+docs/**/*.fls
+docs/**/*.lof
+docs/**/*.log
+docs/**/*.lot
+docs/**/*.nav
+docs/**/*.out
+docs/**/*.run.xml
+docs/**/*.snm
+docs/**/*.synctex.gz
+docs/**/*.toc
+docs/**/*.vrb
